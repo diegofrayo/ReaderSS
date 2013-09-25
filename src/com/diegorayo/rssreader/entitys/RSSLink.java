@@ -1,14 +1,48 @@
 package com.diegorayo.rssreader.entitys;
 
+/**
+ * @author Diego Rayo
+ * @version 1 <br />
+ *          Description- Sirve pa 2 cosas
+ */
 public class RSSLink {
 
+	/**
+	 * 
+	 */
 	private int id;
+
+	/**
+	 * 
+	 */
 	private String title;
+
+	/**
+	 * 
+	 */
 	private String url;
+
+	/**
+	 * 
+	 */
 	private String date;
+
+	/**
+	 * 
+	 */
 	private String description;
+
+	/**
+	 * 
+	 */
 	private RSSChannel rssChannelParent;
 
+	/**
+	 * 
+	 * @param title
+	 * @param url
+	 * @param date
+	 */
 	public RSSLink(String title, String url, String date) {
 		super();
 		this.title = title;
@@ -16,6 +50,9 @@ public class RSSLink {
 		this.date = date;
 	}
 
+	/**
+	 * 
+	 */
 	public RSSLink() {
 		super();
 	}
@@ -60,11 +97,11 @@ public class RSSLink {
 		this.description = description;
 	}
 
-	public RSSChannel getRssChannelParent() {
+	public RSSChannel getRSSChannelParent() {
 		return rssChannelParent;
 	}
 
-	public void setRssChannelParent(RSSChannel rssChannelParent) {
+	public void setRSSChannelParent(RSSChannel rssChannelParent) {
 		this.rssChannelParent = rssChannelParent;
 	}
 

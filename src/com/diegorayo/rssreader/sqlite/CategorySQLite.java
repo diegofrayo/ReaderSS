@@ -4,66 +4,98 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.diegorayo.rssreader.entitys.Category;
+import com.diegorayo.rssreader.exceptions.DataBaseTransactionException;
+import com.diegorayo.rssreader.exceptions.EntityNullException;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * @author Diego Rayo
+ * @version 1 <br />
+ *          Description
+ */
 public class CategorySQLite {
 
+	/**
+	 * 
+	 */
 	private SQLiteDatabase db;
 
+	/**
+	 * 
+	 * @param db
+	 */
 	public CategorySQLite(SQLiteDatabase db) {
 		this.db = db;
 	}
 
-	public Category createCategory(Category category) {
+	public Category createCategory(Category category)
+			throws EntityNullException, DataBaseTransactionException {
 
 		if (category != null) {
 			ContentValues values = new ContentValues();
 			values.put("name", category.getName());
+
 			long idRow = db.insert("category", null, values);
+
 			if (idRow != -1) {
 				category.setId((int) idRow);
 				return category;
 			}
+
+			throw new DataBaseTransactionException(
+					DataBaseTransactionException.OPERATION_INSERT,
+					Category.class.getSimpleName());
 		}
 
-		return null;
-
+		throw new EntityNullException(Category.class.getSimpleName());
 	}
 
-	public Category editCategory(Category category) {
+	public Category editCategory(Category category)
+			throws DataBaseTransactionException, EntityNullException {
 
 		if (category != null) {
 			ContentValues values = new ContentValues();
 			values.put("name", category.getName());
 			String whereArgs[] = new String[] { category.getId() + "" };
+
 			long idRow = db.update("category", values, "id = ?", whereArgs);
+
 			if (idRow != -1) {
 				return category;
 			}
+
+			throw new DataBaseTransactionException(
+					DataBaseTransactionException.OPERATION_INSERT,
+					Category.class.getSimpleName());
 		}
 
-		return null;
-
+		throw new EntityNullException(Category.class.getSimpleName());
 	}
 
-	public boolean deleteCategory(int idCategory) {
+	public boolean deleteCategory(int idCategory)
+			throws DataBaseTransactionException {
 
 		String whereArgs[] = new String[] { idCategory + "" };
+
 		long idRow = db.delete("category", "id = ?", whereArgs);
-		if (idRow != 0) {
+
+		if (idRow == 1) {
 			return true;
 		}
 
-		return false;
+		throw new DataBaseTransactionException(
+				DataBaseTransactionException.OPERATION_DELETE,
+				Category.class.getSimpleName());
 	}
 
 	public Category getCategoryById(int idCategory) {
 
 		String[] columns = new String[] { "id", "name" };
 		String[] whereArgs = new String[] { idCategory + "" };
+
 		Cursor selection = db.query("category", columns, "id = ?", whereArgs,
 				null, null, null);
 
@@ -78,10 +110,12 @@ public class CategorySQLite {
 	}
 
 	public List<Category> getListAllCategories() {
+
+		List<Category> listCategories = new ArrayList<Category>();
 		String[] columns = new String[] { "id", "name" };
+
 		Cursor selection = db.query("category", columns, null, null, null,
 				null, null);
-		List<Category> listCategories = new ArrayList<Category>();
 
 		if (selection.moveToFirst()) {
 			do {
@@ -90,7 +124,6 @@ public class CategorySQLite {
 				category.setName(selection.getString(1));
 				listCategories.add(category);
 			} while (selection.moveToNext());
-
 		}
 
 		return listCategories;

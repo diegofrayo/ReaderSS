@@ -1,4 +1,4 @@
-package com.diegorayo.rssreader.util;
+package com.diegorayo.rssreader.files;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,14 +17,34 @@ import org.xml.sax.SAXException;
 
 import com.diegorayo.rssreader.entitys.RSSLink;
 
+/**
+ * @author Diego Rayo
+ * @version 1 <br />
+ *          Description
+ */
 public class XMLFileParser {
 
+	/**
+	 * 
+	 */
 	private URL url;
 
+	/**
+	 * 
+	 * @param url
+	 * @throws MalformedURLException
+	 */
 	public XMLFileParser(String url) throws MalformedURLException {
 		this.url = new URL(url);
 	}
 
+	/**
+	 * 
+	 * @return
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 */
 	public LinkedList<RSSLink> parse() throws SAXException, IOException,
 			ParserConfigurationException {
 
@@ -63,6 +83,11 @@ public class XMLFileParser {
 		return listRSSLinks;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	public InputStream getConnection() throws IOException {
 		return url.openConnection().getInputStream();
 	}

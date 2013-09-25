@@ -2,20 +2,52 @@ package com.diegorayo.rssreader.entitys;
 
 import java.util.List;
 
+/**
+ * @author Diego Rayo
+ * @version 1 <br />
+ *          Description
+ */
 public class RSSChannel {
 
+	/**
+	 * 
+	 */
 	private int id;
+
+	/**
+	 * 
+	 */
 	private String url;
+
+	/**
+	 * 
+	 */
 	private String name;
+
+	/**
+	 * 
+	 */
 	private List<RSSLink> listRSSLinks;
+
+	/**
+	 * 
+	 */
 	private Category category;
 
+	/**
+	 * 
+	 * @param url
+	 * @param name
+	 */
 	public RSSChannel(String url, String name) {
 		super();
 		this.url = url;
 		this.name = name;
 	}
 
+	/**
+	 * 
+	 */
 	public RSSChannel() {
 		super();
 	}

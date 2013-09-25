@@ -1,31 +1,24 @@
-package com.diegorayo.rssreader.main;
+package com.diegorayo.rssreader.activities;
 
 import com.diegorayo.rssreader.R;
-import com.diegorayo.rssreader.api.RSSReaderAPI;
-import com.diegorayo.rssreader.sqlite.DatabaseConnection;
-
 import android.os.Bundle;
 import android.app.Activity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	private RSSReaderAPI API;
+	//private RSSReaderAPI API;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		API = new RSSReaderAPI(this);
+		//API = new RSSReaderAPI(this);
 
-		Button b = (Button) findViewById(R.id.prueba1);
+		// Button b = (Button) findViewById(R.id.prueba1);
 
 		// dbConnection = new DatabaseConnection(this, "DatabaseApp.db", null,
 		// 1);

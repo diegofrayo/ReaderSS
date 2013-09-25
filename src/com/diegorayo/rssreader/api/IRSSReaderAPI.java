@@ -5,23 +5,39 @@ import java.util.List;
 import com.diegorayo.rssreader.entitys.Category;
 import com.diegorayo.rssreader.entitys.RSSChannel;
 import com.diegorayo.rssreader.entitys.RSSLink;
+import com.diegorayo.rssreader.exceptions.ArgumentInvalidException;
+import com.diegorayo.rssreader.exceptions.DataBaseTransactionException;
+import com.diegorayo.rssreader.exceptions.EntityNullException;
 
+/**
+ * @author Diego Rayo
+ * @version 1 <br />
+ *          Description
+ */
 public interface IRSSReaderAPI {
 
-	public RSSChannel createRSSChannel(String name, String url, int idCategory);
+	public RSSChannel createRSSChannel(String name, String url, int idCategory)
+			throws ArgumentInvalidException, DataBaseTransactionException,
+			EntityNullException;
 
 	public RSSChannel editRSSChannel(int idRSSChannel, String name, String url,
-			int idCategory);
+			int idCategory) throws ArgumentInvalidException,
+			DataBaseTransactionException, EntityNullException;
 
-	public boolean deleteRSSChannel(int idRSSChannel);
+	public boolean deleteRSSChannel(int idRSSChannel)
+			throws DataBaseTransactionException;
 
 	public RSSChannel getRSSChannelById(int idRSSChannel);
 
-	public Category createCategory(String name);
+	public Category createCategory(String name) throws EntityNullException,
+			DataBaseTransactionException, ArgumentInvalidException;
 
-	public Category editCategory(int idCategory, String name);
+	public Category editCategory(int idCategory, String name)
+			throws ArgumentInvalidException, DataBaseTransactionException,
+			EntityNullException;
 
-	public Category deleteCategory(int idCategory);
+	public boolean deleteCategory(int idCategory)
+			throws DataBaseTransactionException;
 
 	public Category getCategoryById(int idCategory);
 
@@ -29,16 +45,13 @@ public interface IRSSReaderAPI {
 
 	public List<RSSChannel> getListRSSChannelsInACategory(int idCategory);
 
-	public List<RSSLink> getListRSSLinksARSSChannel(int categoryRSSChannel);
+	public boolean addFavoriteRSSLink(String title, String url, String date,
+			int idRSSChannelParent) throws DataBaseTransactionException,
+			EntityNullException, ArgumentInvalidException;
 
-	public List<RSSChannel> getListRSSLinksInACategory(int idCategory);
+	public boolean deleteFavoriteRSSLink(int idRSSLink) throws DataBaseTransactionException;
 
-	public boolean addFavoriteRSSLink(String title, String url,
-			int idRSSChannelParent);
-
-	public boolean deleteFavoriteRSSLink(int id);
-
-	public List<RSSChannel> getListAllFavoritesRSSLinks();
+	public List<RSSLink> getListAllFavoritesRSSLinks();
 
 	public boolean getConfigurationRatingApp();
 
