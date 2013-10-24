@@ -1,8 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">RSS Reader</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">ReaderSS</string>
+
+    <!-- Variables -->
+    <string name="path_app_files">/data/data/com.diegorayo.readerss/files</string>
+    <!-- Variables -->
+
+
+    <!-- AlertsDialogs -->
+    <string name="success_new_rss_channel">The RSS Channel ha sido create with success</string>
+    <string name="success_new_category">The Category ha sido create with success</string>
+    <string name="insert_username">Insert a username</string>
+    <!-- TextViews -->
+
+
+    <!-- TextViews -->
+    <string name="txt_welcome">Welcome</string>
+    <string name="txt_cancel">Cancel</string>
+    <string name="txt_create">Create</string>
+    <string name="txt_success">Success</string>
+    <string name="txt_error">Error</string>
+    <string name="txt_ok">OK</string>
+    <!-- TextViews -->
+
+
+    <!-- TextViews MainActivity -->
+    <string name="txt_rss_channel">RSS \n Channel</string>
+    <string name="txt_category">Category</string>
+    <string name="txt_list_categories">Category\nList</string>
+    <string name="txt_rss_links_favorites">Favorites\nLinks RSS</string>
+    <!-- TextViews MainActivity -->
+
+
+    <!-- Dialog new RSS Channel -->
+    <string name="hint_name_rss_channel">Name</string>
+    <string name="hint_url_rss_channel">URL</string>
+    <!-- Dialog new RSS Channel -->
+
+
+    <!-- Excepciones -->
+    <string name="exc_ArgumentInvalidException">Los argumentos ingresados con invalidos. Ingrese bien los datos</string>
+    <string name="exc_URLDownloadFileException_1">URL Invalida. El archivo es demasiado pesado</string>
+    <string name="exc_URLDownloadFileException_2">URL Invalida. El archivo no es XML</string>
+    <string name="exc_EntityNullException">La entidad de tipo % ingresada como argumento, es nula</string>
+    <string name="exc_DataBaseTransactionException">Falló la transaccion de 1, de la entidad 2</string>
+    <!-- Excepciones -->
 
 </resources>
