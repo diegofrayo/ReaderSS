@@ -39,6 +39,11 @@ public class RSSLink {
 
 	/**
 	 * 
+	 */
+	private boolean isNew;
+
+	/**
+	 * 
 	 * @param title
 	 * @param url
 	 * @param date
@@ -103,6 +108,14 @@ public class RSSLink {
 
 	public void setRSSChannelParent(RSSChannel rssChannelParent) {
 		this.rssChannelParent = rssChannelParent;
+	}
+
+	public boolean isNew() {
+		return isNew;
+	}
+
+	public void setNew(boolean isNew) {
+		this.isNew = isNew;
 	}
 
 }

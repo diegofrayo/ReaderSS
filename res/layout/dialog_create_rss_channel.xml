@@ -5,19 +5,29 @@
     android:orientation="vertical"
     android:padding="5dp" >
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:gravity="center"
+        android:text="@string/create_rss_channel"
+        android:textSize="@dimen/size_large"
+        android:textStyle="bold" />
+
     <EditText
-        android:id="@+id/edt_new_name_rss_channel"
+        android:id="@+id/edt_name_rss_channel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:hint="@string/hint_name_rss_channel"
         android:inputType="text"
-        android:maxLength="20" />
+        android:maxLength="40" />
 
     <EditText
-        android:id="@+id/edt_new_url_rss_channel"
+        android:id="@+id/edt_url_rss_channel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
         android:hint="@string/hint_url_rss_channel"
         android:inputType="textUri"
         android:maxLength="100" />
@@ -26,11 +36,8 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:text="@string/txt_category"
-        android:textColor="@color/secundary_text"
-        android:textSize="@dimen/dim_txt_base"
-        android:textStyle="bold" />
+        android:textSize="@dimen/size_base" />
 
     <Spinner
         android:id="@+id/spnListCategories"
@@ -50,15 +57,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/txt_create"
-            android:textColor="@color/primary_text" />
+            android:textColor="@color/color_primary"
+            android:textStyle="bold" />
 
         <Button
-            android:id="@+id/btn_cancel_new_rss_channel"
+            android:id="@+id/btn_cancel"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/txt_cancel"
-            android:textColor="@color/primary_text" />
+            android:textColor="@color/color_primary" />
     </LinearLayout>
 
 </LinearLayout>

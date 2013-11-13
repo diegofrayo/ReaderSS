@@ -7,11 +7,12 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
-import com.diegorayo.readerss.R;
+
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import com.diegorayo.readerss.R;
 import com.diegorayo.readerss.api.RSSReaderAPI;
 import com.diegorayo.readerss.entitys.Category;
 import com.diegorayo.readerss.entitys.RSSChannel;
@@ -53,7 +54,7 @@ public class FilesManagement {
 	 * @throws URLDownloadFileException
 	 */
 	@SuppressWarnings("resource")
-	public boolean downloadXMLFile(RSSChannel rssChannel) throws IOException,
+	public int downloadXMLFile(RSSChannel rssChannel) throws IOException,
 			SAXException, ParserConfigurationException, EntityNullException,
 			URLDownloadFileException {
 
@@ -83,7 +84,10 @@ public class FilesManagement {
 				// and connect!
 				urlConnection.connect();
 
-				if (urlConnection.getContentLength() > 600000) {
+				int sizeFile = urlConnection.getContentLength();
+
+				if (sizeFile > 600000) {
+					deleteFile(rssChannel);
 					throw new URLDownloadFileException(
 							R.string.exc_URLDownloadFileException_1);
 				}
@@ -117,19 +121,27 @@ public class FilesManagement {
 					// this is where you would do something to report the
 					// prgress,
 					// like this maybe
-					// updateProgress(downloadedSize, totalSize);
 
 				}
 
 				fout.close();
+				inputStream.close();
+				urlConnection.disconnect();
 
-				if (XMLFileParser.documentIsXMLFile(createPathFile(rssChannel)) == false) {
-					deleteFile(rssChannel);
+				try {
+					XMLFileParser.documentIsXMLFile(createPathFile(rssChannel));
+				} catch (Exception e) {
+
+					if (downloadFile.exists()) {
+						deleteFile(rssChannel);
+					}
+
+					e.printStackTrace();
 					throw new URLDownloadFileException(
 							R.string.exc_URLDownloadFileException_2);
 				}
 
-				return true;
+				return sizeFile;
 
 			}
 			throw new EntityNullException(Category.class.getSimpleName());
@@ -166,6 +178,8 @@ public class FilesManagement {
 			}
 
 			pathFile.delete();
+
+			return;
 		}
 
 		throw new EntityNullException(Category.class.getSimpleName());
@@ -206,11 +220,19 @@ public class FilesManagement {
 
 			oldFile.renameTo(newFile);
 
+			return;
+
 		}
 
 		throw new EntityNullException(Category.class.getSimpleName());
 	}
 
+	/**
+	 * 
+	 * @param oldRSSChannel
+	 * @param editRSSChannel
+	 * @throws EntityNullException
+	 */
 	public void moveFile(RSSChannel oldRSSChannel, RSSChannel editRSSChannel)
 			throws EntityNullException {
 
@@ -220,6 +242,12 @@ public class FilesManagement {
 		oldFile.renameTo(newFile);
 	}
 
+	/**
+	 * 
+	 * @param category
+	 * @return
+	 * @throws EntityNullException
+	 */
 	public boolean createDirectory(Category category)
 			throws EntityNullException {
 
@@ -247,7 +275,7 @@ public class FilesManagement {
 				String pathFile = RSSReaderAPI.PATH + File.separator
 						+ rssChannel.getCategory().getName() + File.separator
 						+ rssChannel.getName() + ".xml";
-				return "file:///" + pathFile;
+				return pathFile;
 			}
 
 			throw new EntityNullException(Category.class.getSimpleName());

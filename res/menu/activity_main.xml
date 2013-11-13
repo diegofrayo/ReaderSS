@@ -1,0 +1,35 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/btn_add_rss_channel"
+        android:icon="@drawable/ic_add"
+        android:title="@string/txt_rss_channel"/>
+    <item
+        android:id="@+id/btn_add_category"
+        android:icon="@drawable/ic_add"
+        android:title="@string/txt_category"/>
+    <item
+        android:id="@+id/btn_edit_username"
+        android:icon="@drawable/ic_edit_menu"
+        android:title="@string/edit_username"/>
+    <item
+        android:id="@+id/btn_view_in_app"
+        android:icon="@drawable/ic_view_in"
+        android:title="@string/view_in">
+        <menu>
+            <item
+                android:id="@+id/btn_submenu_view_in_browser"
+                android:title="@string/view_in_browser"/>
+            <item
+                android:id="@+id/btn_submenu_view_in_app"
+                android:title="@string/app_name"/>
+        </menu>
+    </item>
+
+</menu>
+<!--
+         <item
+        android:id="@+id/btn_favorites_links_rss"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/txt_rss_links_favorites"/>
+-->

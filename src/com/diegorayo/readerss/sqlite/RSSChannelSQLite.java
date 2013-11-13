@@ -1,11 +1,8 @@
 package com.diegorayo.readerss.sqlite;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,7 +17,7 @@ import com.diegorayo.readerss.exceptions.EntityNullException;
  * @version 1 <br />
  *          Description
  */
-@SuppressLint("SimpleDateFormat")
+
 public class RSSChannelSQLite {
 
 	/**
@@ -42,19 +39,18 @@ public class RSSChannelSQLite {
 
 		if (rssChannel != null) {
 			if (rssChannel.getCategory() != null) {
+
 				ContentValues values = new ContentValues();
-				// values.put("id", 0);
+
 				values.put("name", rssChannel.getName());
 				values.put("url", rssChannel.getUrl());
 				values.put("category", rssChannel.getCategory().getId());
-
-				SimpleDateFormat sdf = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss");
-				String currentDateAndTime = sdf.format(new Date());
-				values.put("last_update", currentDateAndTime);
+				values.put("last_update", rssChannel.getLastUpdate());
+				values.put("modified", rssChannel.isModified());
+				values.put("last_content_length_xml_file",
+						rssChannel.getLastContentLengthXMLFile());
 
 				long idRow = db.insert("rss_channel", null, values);
-				// db.close();
 
 				if (idRow != -1) {
 					rssChannel.setId((int) idRow);
@@ -79,11 +75,15 @@ public class RSSChannelSQLite {
 			if (rssChannel.getCategory() != null) {
 				ContentValues values = new ContentValues();
 				values.put("name", rssChannel.getName());
-				values.put("url", rssChannel.getUrl());
 				values.put("category", rssChannel.getCategory().getId());
 				values.put("last_update", rssChannel.getLastUpdate());
+				values.put("modified", rssChannel.isModified());
+				values.put("date_last_rss_link",
+						rssChannel.getDateLastRSSLink());
+				values.put("last_content_length_xml_file",
+						rssChannel.getLastContentLengthXMLFile());
+
 				String whereArgs[] = new String[] { rssChannel.getId() + "" };
-				// db.close();
 
 				long idRow = db.update("rss_channel", values, "id = ?",
 						whereArgs);
@@ -113,7 +113,7 @@ public class RSSChannelSQLite {
 			FavoriteRSSLinkSQLite favoriteRSSLinkHelper = new FavoriteRSSLinkSQLite(
 					db);
 			favoriteRSSLinkHelper.editFavoriteRSSLink(idRSSChannel);
-			// db.close();
+
 			return true;
 		}
 
@@ -125,7 +125,8 @@ public class RSSChannelSQLite {
 	public RSSChannel getRSSChannelById(int idRSSChannel) {
 
 		String[] columns = new String[] { "id", "name", "url", "category",
-				"last_update" };
+				"last_update", "modified", "date_last_rss_link",
+				"last_content_length_xml_file" };
 		String[] whereArgs = new String[] { idRSSChannel + "" };
 
 		Cursor selection = db.query("rss_channel", columns, "id = ?",
@@ -142,12 +143,13 @@ public class RSSChannelSQLite {
 			rssChannel.setUrl(selection.getString(2));
 			rssChannel.setCategory(categoryRSSChannel);
 			rssChannel.setLastUpdate(selection.getString(4));
+			rssChannel.setModified(selection.getInt(5) > 0);
+			rssChannel.setDateLastRSSLink(selection.getString(6));
+			rssChannel.setLastContentLengthXMLFile(selection.getInt(7));
 
-			// db.close();
 			return rssChannel;
 		}
 
-		// db.close();
 		return null;
 	}
 
@@ -155,11 +157,12 @@ public class RSSChannelSQLite {
 
 		List<RSSChannel> listRSSChannels = new ArrayList<RSSChannel>();
 		String[] columns = new String[] { "id", "name", "url", "category",
-				"last_update" };
+				"last_update", "modified", "date_last_rss_link",
+				"last_content_length_xml_file" };
 		String[] whereArgs = new String[] { idCategory + "" };
 
 		Cursor selection = db.query("rss_channel", columns, "category = ?",
-				whereArgs, null, null, null);
+				whereArgs, null, null, "name asc");
 
 		if (selection.moveToFirst()) {
 			CategorySQLite categoryHelper = new CategorySQLite(db);
@@ -172,13 +175,79 @@ public class RSSChannelSQLite {
 				rssChannel.setUrl(selection.getString(2));
 				rssChannel.setCategory(categoryRSSChannels);
 				rssChannel.setLastUpdate(selection.getString(4));
+				rssChannel.setModified(selection.getInt(5) > 0);
+				rssChannel.setDateLastRSSLink(selection.getString(6));
+				rssChannel.setLastContentLengthXMLFile(selection.getInt(7));
 				listRSSChannels.add(rssChannel);
 			} while (selection.moveToNext());
 		}
 
-		// db.close();
+		return listRSSChannels;
+	}
+
+	public List<RSSChannel> getListAllRSSChannels() {
+
+		List<RSSChannel> listRSSChannels = new ArrayList<RSSChannel>();
+		String[] columns = new String[] { "id", "name", "url", "category",
+				"last_update", "modified", "date_last_rss_link",
+				"last_content_length_xml_file" };
+
+		Cursor selection = db.query("rss_channel", columns, "", null, null,
+				null, "name asc");
+
+		if (selection.moveToFirst()) {
+			CategorySQLite categoryHelper = new CategorySQLite(db);
+			do {
+				RSSChannel rssChannel = new RSSChannel();
+				rssChannel.setId(selection.getInt(0));
+				rssChannel.setName(selection.getString(1));
+				rssChannel.setUrl(selection.getString(2));
+				rssChannel.setLastUpdate(selection.getString(4));
+				rssChannel.setModified(selection.getInt(5) > 0);
+				rssChannel.setDateLastRSSLink(selection.getString(6));
+				rssChannel.setLastContentLengthXMLFile(selection.getInt(7));
+
+				Category categoryRSSChannel = categoryHelper
+						.getCategoryById(selection.getInt(3));
+				rssChannel.setCategory(categoryRSSChannel);
+
+				listRSSChannels.add(rssChannel);
+			} while (selection.moveToNext());
+		}
 
 		return listRSSChannels;
 	}
 
+	public RSSChannel editLastContentLengthXMLFileRSSChannel(
+			RSSChannel rssChannel) throws DataBaseTransactionException,
+			EntityNullException {
+
+		if (rssChannel != null) {
+
+			ContentValues values = new ContentValues();
+			values.put("last_update", rssChannel.getLastUpdate());
+			values.put("modified", rssChannel.isModified());
+			values.put("last_content_length_xml_file",
+					rssChannel.getLastContentLengthXMLFile());
+
+			if (rssChannel.getDateLastRSSLink() != null) {
+				values.put("date_last_rss_link",
+						rssChannel.getDateLastRSSLink());
+			}
+
+			String whereArgs[] = new String[] { rssChannel.getId() + "" };
+
+			long idRow = db.update("rss_channel", values, "id = ?", whereArgs);
+			if (idRow != -1) {
+				return rssChannel;
+			}
+
+			throw new DataBaseTransactionException(
+					DataBaseTransactionException.OPERATION_UPDATE,
+					RSSChannel.class.getSimpleName());
+
+		}
+
+		throw new EntityNullException(RSSChannel.class.getSimpleName());
+	}
 }

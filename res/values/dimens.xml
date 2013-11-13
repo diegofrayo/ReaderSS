@@ -1,6 +1,8 @@
 <resources>
 
-    <dimen name="dim_txt_base">18sp</dimen>
-    <dimen name="dim_txt_rss_channels_name">22sp</dimen>
+    <dimen name="size_base">18sp</dimen>
+    <dimen name="size_large">22sp</dimen>
+    <dimen name="size_small">14sp</dimen>
+    <dimen name="image_link_rss">80dp</dimen>
 
 </resources>

@@ -41,6 +41,21 @@ public class RSSChannel {
 
 	/**
 	 * 
+	 */
+	private boolean isModified;
+
+	/**
+	 * 
+	 */
+	private String dateLastRSSLink;
+
+	/**
+	 * 
+	 */
+	private int lastContentLengthXMLFile;
+
+	/**
+	 * 
 	 * @param url
 	 * @param name
 	 */
@@ -103,6 +118,30 @@ public class RSSChannel {
 
 	public void setLastUpdate(String lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+
+	public boolean isModified() {
+		return isModified;
+	}
+
+	public void setModified(boolean isModified) {
+		this.isModified = isModified;
+	}
+
+	public String getDateLastRSSLink() {
+		return dateLastRSSLink;
+	}
+
+	public void setDateLastRSSLink(String dateLastRSSLink) {
+		this.dateLastRSSLink = dateLastRSSLink;
+	}
+
+	public int getLastContentLengthXMLFile() {
+		return lastContentLengthXMLFile;
+	}
+
+	public void setLastContentLengthXMLFile(int lastContentLengthXMLFile) {
+		this.lastContentLengthXMLFile = lastContentLengthXMLFile;
 	}
 
 }

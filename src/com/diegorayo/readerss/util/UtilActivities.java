@@ -1,10 +1,6 @@
-package com.diegorayo.readerss.util_activities;
+package com.diegorayo.readerss.util;
 
 import java.util.List;
-
-import com.diegorayo.readerss.R;
-import com.diegorayo.readerss.context.ApplicationContext;
-import com.diegorayo.readerss.entitys.Category;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,6 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.diegorayo.readerss.R;
+import com.diegorayo.readerss.context.ApplicationContext;
+import com.diegorayo.readerss.entitys.Category;
+
 /**
  * @author Diego Rayo
  * @version 1 <br />
@@ -20,6 +20,11 @@ import android.widget.Toast;
  */
 public class UtilActivities {
 
+	/**
+	 * 
+	 * @param context
+	 * @param messageError
+	 */
 	public static void createErrorDialog(Context context, String messageError) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -34,9 +39,13 @@ public class UtilActivities {
 		builder.setIcon(R.drawable.ic_error);
 		builder.create();
 		builder.show();
-
 	}
 
+	/**
+	 * 
+	 * @param context
+	 * @param idMessage
+	 */
 	public static void createSuccessDialog(Context context, int idMessage) {
 
 		// AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -57,11 +66,16 @@ public class UtilActivities {
 				ApplicationContext.getStringResource(R.string.txt_success)
 						+ "\n"
 						+ ApplicationContext.getStringResource(idMessage),
-				Toast.LENGTH_LONG);
-
+				Toast.LENGTH_SHORT);
 		toast.show();
 	}
 
+	/**
+	 * 
+	 * @param context
+	 * @param categoryList
+	 * @param spinner
+	 */
 	public static void insertCategoriesInSpinner(Context context,
 			List<Category> categoryList, Spinner spinner) {
 

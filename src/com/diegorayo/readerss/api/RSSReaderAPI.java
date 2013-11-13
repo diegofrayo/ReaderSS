@@ -1,6 +1,9 @@
 package com.diegorayo.readerss.api;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +28,8 @@ import com.diegorayo.readerss.sqlite.ConfigurationSQLite;
 import com.diegorayo.readerss.sqlite.DatabaseConnection;
 import com.diegorayo.readerss.sqlite.FavoriteRSSLinkSQLite;
 import com.diegorayo.readerss.sqlite.RSSChannelSQLite;
+import com.diegorayo.readerss.util.UtilAPI;
+import com.diegorayo.readerss.util.UtilActivities;
 
 /**
  * 
@@ -41,8 +46,16 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 	 */
 	private DatabaseConnection dbConnection;
 
+	/**
+	 * 
+	 */
 	public static final String PATH = ApplicationContext
 			.getStringResource(R.string.path_app_files);
+
+	/**
+	 * 
+	 */
+	private Context context;
 
 	/**
 	 * 
@@ -52,15 +65,30 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 		super();
 		this.dbConnection = new DatabaseConnection(context, "DatabaseApp.db",
 				null, 1);
+		this.context = context;
+	}
+
+	/**
+	 * 
+	 */
+	public void closeConnection() {
+		this.dbConnection.close();
 	}
 
 	@Override
 	public RSSChannel createRSSChannel(String name, String url, int idCategory)
 			throws ArgumentInvalidException, DataBaseTransactionException,
-			EntityNullException, IOException, SAXException,
-			ParserConfigurationException {
+			EntityNullException {
 
-		if (!name.trim().equals("") && URLUtil.isValidUrl(url)) {
+		boolean urlIsANumber = UtilAPI.isNumber(url.toCharArray());
+
+		if (!name.trim().equals("")
+				&& (URLUtil.isValidUrl(url) || urlIsANumber)) {
+
+			if (urlIsANumber) {
+				url = "http://www.facebook.com/feeds/page.php?id=" + url
+						+ "&format=rss20";
+			}
 
 			RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 					dbConnection.getWritableDatabase());
@@ -70,29 +98,58 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 			RSSChannel newRSSChannel = new RSSChannel(url, name);
 			newRSSChannel.setCategory(categoryHelper
 					.getCategoryById(idCategory));
+			newRSSChannel.setModified(true);
+			newRSSChannel.setLastContentLengthXMLFile(0);
+			newRSSChannel.setLastUpdate(UtilAPI.getCurrentDateAndTime());
 			newRSSChannel = rssChannelHelper.createRSSChannel(newRSSChannel);
 
-			FilesManagement filesManagement = new FilesManagement();
 			try {
-				filesManagement.downloadXMLFile(newRSSChannel);
+
+				FilesManagement filesManagement = new FilesManagement();
+				int lastContentLengthXMLFile = filesManagement
+						.downloadXMLFile(newRSSChannel);
+				newRSSChannel
+						.setLastContentLengthXMLFile(lastContentLengthXMLFile);
+
+				return rssChannelHelper
+						.editLastContentLengthXMLFileRSSChannel(newRSSChannel);
+
 			} catch (URLDownloadFileException e) {
-				rssChannelHelper.deleteRSSChannel(newRSSChannel.getId());
+				deleteRSSChannel(newRSSChannel.getId());
+				UtilActivities.createErrorDialog(context, e.getMessage());
 				e.printStackTrace();
-				return null;
+			} catch (UnknownHostException e) {
+				deleteRSSChannel(newRSSChannel.getId());
+				UtilActivities.createErrorDialog(context, e.getMessage());
+				e.printStackTrace();
+			} catch (IOException e) {
+				deleteRSSChannel(newRSSChannel.getId());
+				UtilActivities.createErrorDialog(context, e.getMessage());
+				e.printStackTrace();
+			} catch (SAXException e) {
+				deleteRSSChannel(newRSSChannel.getId());
+				UtilActivities.createErrorDialog(context, e.getMessage());
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				deleteRSSChannel(newRSSChannel.getId());
+				UtilActivities.createErrorDialog(context, e.getMessage());
+				e.printStackTrace();
 			}
 
-			return newRSSChannel;
+			return null;
 		}
 
 		throw new ArgumentInvalidException();
 	}
 
 	@Override
-	public RSSChannel editRSSChannel(int idRSSChannel, String name, String url,
-			int idCategory) throws ArgumentInvalidException,
-			DataBaseTransactionException, EntityNullException {
+	public RSSChannel editRSSChannel(int idRSSChannel, String name,
+			int idCategory, String lastUpdate, boolean modified,
+			String dateLastRSSLink, int lastContentLengthXMLFile)
+			throws ArgumentInvalidException, DataBaseTransactionException,
+			EntityNullException {
 
-		if (!name.trim().equals("") && URLUtil.isValidUrl(url)) {
+		if (!name.trim().equals("")) {
 
 			FilesManagement filesManagement = new FilesManagement();
 			RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
@@ -103,10 +160,15 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 			RSSChannel oldRSSChannel = rssChannelHelper
 					.getRSSChannelById(idRSSChannel);
 
-			RSSChannel rssChannelToEdit = new RSSChannel(url, name);
+			RSSChannel rssChannelToEdit = new RSSChannel(null, name);
 			rssChannelToEdit.setId(idRSSChannel);
 			rssChannelToEdit.setCategory(categoryHelper
 					.getCategoryById(idCategory));
+			rssChannelToEdit.setLastUpdate(lastUpdate);
+			rssChannelToEdit.setModified(modified);
+			rssChannelToEdit.setDateLastRSSLink(dateLastRSSLink);
+			rssChannelToEdit
+					.setLastContentLengthXMLFile(lastContentLengthXMLFile);
 
 			rssChannelToEdit = rssChannelHelper
 					.editRSSChannel(rssChannelToEdit);
@@ -131,6 +193,24 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 		}
 
 		throw new ArgumentInvalidException();
+	}
+
+	@Override
+	public RSSChannel editLastContentLengthXMLFileRSSChannel(
+			RSSChannel rssChannel) throws DataBaseTransactionException,
+			EntityNullException {
+
+		if (rssChannel != null) {
+
+			RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
+					dbConnection.getWritableDatabase());
+
+			return rssChannelHelper
+					.editLastContentLengthXMLFileRSSChannel(rssChannel);
+
+		}
+
+		throw new EntityNullException(RSSChannel.class.getSimpleName());
 	}
 
 	@Override
@@ -205,6 +285,7 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 					dbConnection.getWritableDatabase());
 
 			Category categoryToEdit = new Category(name);
+			categoryToEdit.setId(idCategory);
 			categoryToEdit = categoryHelper.editCategory(categoryToEdit);
 
 			filesManagement.renameFolder(oldCategory, name);
@@ -223,6 +304,7 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 				dbConnection.getReadableDatabase());
 		Category categoryDelete = categoryHelper.getCategoryById(idCategory);
 
+		categoryHelper = new CategorySQLite(dbConnection.getWritableDatabase());
 		boolean response = categoryHelper.deleteCategory(idCategory);
 
 		FilesManagement filesManagement = new FilesManagement();
@@ -305,6 +387,12 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 	}
 
 	@Override
+	public void configurationApp() {
+		new ConfigurationSQLite(dbConnection.getWritableDatabase())
+				.insertConfiguration();
+	}
+
+	@Override
 	public boolean getConfigurationRatingApp() {
 
 		ConfigurationSQLite configurationSQLiteHelper = new ConfigurationSQLite(
@@ -360,6 +448,143 @@ public class RSSReaderAPI implements IRSSReaderAPI {
 				dbConnection.getWritableDatabase());
 
 		return configurationSQLiteHelper.editOpenFirstApp();
+	}
+
+	@Override
+	public boolean getViewRSSLinksInApp() {
+
+		ConfigurationSQLite configurationSQLiteHelper = new ConfigurationSQLite(
+				dbConnection.getReadableDatabase());
+
+		return configurationSQLiteHelper.getViewRSSLinksInApp();
+	}
+
+	@Override
+	public boolean editViewRSSLinksInApp(String option)
+			throws ArgumentInvalidException {
+
+		if (!option.trim().equals("")) {
+
+			ConfigurationSQLite configurationSQLiteHelper = new ConfigurationSQLite(
+					dbConnection.getWritableDatabase());
+
+			return configurationSQLiteHelper.editViewRSSLinksInApp(option);
+		}
+
+		throw new ArgumentInvalidException();
+	}
+
+	@Override
+	public List<RSSLink> getListRSSLinksOfRSSChannel(RSSChannel rssChannel)
+			throws EntityNullException, SAXException, IOException,
+			ParserConfigurationException {
+
+		if (rssChannel != null) {
+
+			List<RSSLink> list = new FilesManagement().readFileXML(rssChannel);
+
+			if (rssChannel.getDateLastRSSLink() == null) {
+				for (RSSLink rssLink : list) {
+					rssLink.setNew(true);
+				}
+			} else {
+				for (RSSLink rssLink : list) {
+					if (rssLink.getDate().equals(
+							rssChannel.getDateLastRSSLink())) {
+						break;
+					} else {
+						rssLink.setNew(true);
+					}
+				}
+			}
+
+			return list;
+		}
+
+		throw new EntityNullException(RSSChannel.class.getSimpleName());
+	}
+
+	@Override
+	public List<RSSLink> downloadXMLFileAndGetListRSSLinksOfRSSChannel(
+			RSSChannel rssChannel) throws EntityNullException, SAXException,
+			IOException, ParserConfigurationException,
+			URLDownloadFileException, ArgumentInvalidException,
+			DataBaseTransactionException {
+
+		if (rssChannel != null) {
+
+			FilesManagement filesManagement = new FilesManagement();
+			int lastContentLengthXMLFile = filesManagement
+					.downloadXMLFile(rssChannel);
+
+			RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
+					dbConnection.getWritableDatabase());
+			rssChannel.setLastContentLengthXMLFile(lastContentLengthXMLFile);
+			rssChannelHelper.editLastContentLengthXMLFileRSSChannel(rssChannel);
+
+			return getListRSSLinksOfRSSChannel(rssChannel);
+		}
+
+		throw new EntityNullException(RSSChannel.class.getSimpleName());
+
+	}
+
+	@Override
+	public void checkRSSChannelsModified() {
+
+		FilesManagement filesManagement = new FilesManagement();
+		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
+				dbConnection.getReadableDatabase());
+
+		List<RSSChannel> listAllRSSChannels = rssChannelHelper
+				.getListAllRSSChannels();
+
+		rssChannelHelper = new RSSChannelSQLite(
+				dbConnection.getWritableDatabase());
+
+		for (RSSChannel rssChannel : listAllRSSChannels) {
+
+			try {
+
+				HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+						rssChannel.getUrl()).openConnection();
+				urlConnection.setRequestMethod("GET");
+				urlConnection.setDoOutput(true);
+				urlConnection.connect();
+				int contentLength = urlConnection.getContentLength();
+
+				// System.out.println("URL" + contentLength);
+				// System.out.println("DB"
+				// + rssChannel.getLastContentLengthXMLFile());
+
+				if (rssChannel.getLastContentLengthXMLFile() != contentLength
+						&& contentLength != 0) {
+
+					filesManagement.downloadXMLFile(rssChannel);
+					rssChannel.setLastUpdate(UtilAPI.getCurrentDateAndTime());
+					rssChannel.setLastContentLengthXMLFile(contentLength);
+					rssChannel.setModified(true);
+					rssChannelHelper
+							.editLastContentLengthXMLFileRSSChannel(rssChannel);
+
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			} catch (EntityNullException e) {
+				e.printStackTrace();
+			} catch (URLDownloadFileException e) {
+				e.printStackTrace();
+			} catch (DataBaseTransactionException e) {
+				e.printStackTrace();
+			}
+
+		}
+
 	}
 
 }

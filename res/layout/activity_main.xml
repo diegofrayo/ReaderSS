@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_dark"
+        android:background="@drawable/bg_title_app"
         android:padding="5dp" >
 
         <ImageView
@@ -20,16 +20,16 @@
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_title_app" />
 
-        <TextView
-            android:id="@+id/textView1"
+        <com.diegorayo.readerss.adapters.CustomTextView
+            android:id="@+id/textViewTitleApp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/icontitle"
             android:text="@string/app_name"
-            android:textColor="@color/secundary_text"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+            android:textColor="@color/color_secundary"
+            android:textSize="45sp" >
+        </com.diegorayo.readerss.adapters.CustomTextView>
     </RelativeLayout>
 
     <!-- Body -->
@@ -38,6 +38,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/bg_light"
+        android:gravity="right"
         android:orientation="vertical" >
 
         <!-- Welcome Text -->
@@ -45,7 +46,7 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:gravity="right"
             android:orientation="horizontal"
             android:padding="5dp" >
 
@@ -54,54 +55,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/txt_welcome"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/dim_txt_base"
+                android:textColor="@color/color_primary"
+                android:textSize="@dimen/size_base"
                 android:textStyle="normal" />
 
             <TextView
                 android:id="@+id/txt_welcome_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/dim_txt_base"
+                android:textColor="@color/color_primary"
+                android:textSize="@dimen/size_base"
                 android:textStyle="bold|italic" />
-        </LinearLayout>
-
-        <!-- Icons bar -->
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/btn_add_rss_channel"
-                style="@style/TextsIconsMainActivity"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:drawableTop="@drawable/ic_add"
-                android:text="@string/txt_rss_channel" />
-
-            <Button
-                android:id="@+id/btn_favorite_links"
-                style="@style/TextsIconsMainActivity"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:drawableTop="@drawable/ic_favorite_links"
-                android:text="@string/txt_rss_links_favorites" />
-
-            <Button
-                android:id="@+id/btn_add_category"
-                style="@style/TextsIconsMainActivity"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:drawableTop="@drawable/ic_add"
-                android:text="@string/txt_category" />
         </LinearLayout>
 
         <!-- Content (categories) -->

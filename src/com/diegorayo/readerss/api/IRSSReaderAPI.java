@@ -31,9 +31,14 @@ public interface IRSSReaderAPI {
 			EntityNullException, IOException, SAXException,
 			ParserConfigurationException, URLDownloadFileException;
 
-	public RSSChannel editRSSChannel(int idRSSChannel, String name, String url,
-			int idCategory) throws ArgumentInvalidException,
-			DataBaseTransactionException, EntityNullException;
+	public RSSChannel editRSSChannel(int idRSSChannel, String name,
+			int idCategory, String lastUpdate, boolean modified,
+			String dateLastRSSLink, int lastContentLengthXMLFile)
+			throws ArgumentInvalidException, DataBaseTransactionException,
+			EntityNullException;
+
+	public RSSChannel editLastContentLengthXMLFileRSSChannel(
+			RSSChannel rssChannel) throws DataBaseTransactionException, EntityNullException;
 
 	public boolean deleteRSSChannel(int idRSSChannel)
 			throws DataBaseTransactionException, EntityNullException;
@@ -83,6 +88,8 @@ public interface IRSSReaderAPI {
 	 * ------ Configuration Methods ------
 	 */
 
+	public void configurationApp();
+
 	public boolean getConfigurationRatingApp();
 
 	public boolean editConfigurationRatingApp();
@@ -91,4 +98,27 @@ public interface IRSSReaderAPI {
 
 	public String editUsername(String newUserName)
 			throws ArgumentInvalidException;
+
+	public boolean getViewRSSLinksInApp();
+
+	public boolean editViewRSSLinksInApp(String option)
+			throws ArgumentInvalidException;
+
+	/*
+	 * ------ RSS Links ------
+	 */
+
+	public List<RSSLink> getListRSSLinksOfRSSChannel(RSSChannel rssChannel)
+			throws EntityNullException, SAXException, IOException,
+			ParserConfigurationException;
+
+	public List<RSSLink> downloadXMLFileAndGetListRSSLinksOfRSSChannel(
+			RSSChannel rssChannel) throws EntityNullException, SAXException,
+			IOException, ParserConfigurationException,
+			URLDownloadFileException, ArgumentInvalidException,
+			DataBaseTransactionException;
+
+	public void checkRSSChannelsModified();
+
+	/*--------------------------------------------*/
 }

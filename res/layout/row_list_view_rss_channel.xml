@@ -1,61 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:background="@color/color_white"
     android:padding="5dp" >
 
     <TextView
         android:id="@+id/txt_list_rss_channel_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/primary_text"
-        android:textSize="@dimen/dim_txt_rss_channels_name"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/color_primary"
+        android:textSize="@dimen/size_large"
         android:textStyle="bold" >
-    </TextView>
-
-    <TextView
-        android:id="@+id/txt_list_rss_channel_url"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/color_links"
-        android:textSize="@dimen/dim_txt_base"
-        android:textStyle="bold|italic" >
     </TextView>
 
     <TextView
         android:id="@+id/txt_list_rss_channel_lastupdate"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/primary_text"
-        android:textSize="@dimen/dim_txt_base"
-        android:textStyle="bold" >
+        android:layout_below="@+id/txt_list_rss_channel_name"
+        android:layout_marginRight="5dp"
+        android:gravity="right"
+        android:textColor="@color/color_last_update"
+        android:textSize="@dimen/size_small"
+        android:textStyle="bold|italic" >
     </TextView>
 
-</LinearLayout>
+</RelativeLayout>
 <!--
-    <LinearLayout
-        android:layout_width="wrap_content"
+           <TextView
+        android:id="@+id/txt_list_rss_channel_url"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:orientation="vertical"
-        android:padding="5dp" >
-
-        <ImageButton
-            android:id="@+id/btn_edit_rss_channel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="7dp"
-             android:padding="5dp"
-            android:src="@drawable/ic_edit" />
-
-        <ImageButton
-            android:id="@+id/btn_delete_rss_channel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_delete" />
-    </LinearLayout>
+        android:layout_below="@+id/txt_list_rss_channel_name"
+        android:textColor="@color/color_links"
+        android:textSize="@dimen/size_base"
+        android:textStyle="bold" >
+    </TextView>
 -->

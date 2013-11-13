@@ -2,10 +2,14 @@ package com.diegorayo.readerss.adapters;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
+/**
+ * @author Diego Rayo
+ * @version 1 <br />
+ *          Description
+ */
 public class VerticalScrollView extends ScrollView {
 
 	public VerticalScrollView(Context context) {
@@ -25,8 +29,6 @@ public class VerticalScrollView extends ScrollView {
 		final int action = ev.getAction();
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
-			// Log.i("VerticalScrollview",
-			// "onInterceptTouchEvent: DOWN super false" );
 			super.onTouchEvent(ev);
 			break;
 
@@ -34,18 +36,13 @@ public class VerticalScrollView extends ScrollView {
 			return false;
 
 		case MotionEvent.ACTION_CANCEL:
-			// Log.i("VerticalScrollview",
-			// "onInterceptTouchEvent: CANCEL super false" );
 			super.onTouchEvent(ev);
 			break;
 
 		case MotionEvent.ACTION_UP:
-			// Log.i("VerticalScrollview",
-			// "onInterceptTouchEvent: UP super false" );
 			return false;
 
 		default:
-			Log.i("VerticalScrollview", "onInterceptTouchEvent: " + action);
 			break;
 		}
 
@@ -55,8 +52,6 @@ public class VerticalScrollView extends ScrollView {
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
 		super.onTouchEvent(ev);
-		// Log.i("VerticalScrollview", "onTouchEvent. action: " + ev.getAction()
-		// );
 		return true;
 	}
 }

@@ -8,35 +8,46 @@
     <!-- Variables -->
 
 
-    <!-- AlertsDialogs -->
+    <!-- Frases -->
     <string name="success_new_rss_channel">The RSS Channel ha sido create with success</string>
     <string name="success_new_category">The Category ha sido create with success</string>
+    <string name="success_edit_rss_channel">The RSS Channel ha sido editado with success</string>
+    <string name="success_edit_category">The Category ha sido editada with success</string>
     <string name="insert_username">Insert a username</string>
-    <!-- TextViews -->
+    <string name="create_rss_channel">Create a RSS Channel</string>
+    <string name="create_category">Create a category</string>
+    <string name="edit_rss_channel">Edit a RSS Channel</string>
+    <string name="edit_category">Edit a category</string>
+    <string name="edit_username">Edit your username</string>
+    <string name="qst_delete_category">Esta seguro que desea borrar esta categoria.\nSe borraran todos los canales contenidos en ella</string>
+    <string name="qst_delete_rss_channel">Esta seguro que desea el canal rss</string>
+    <string name="no_internet_connection">No hay conexion a internet</string>
+    <string name="view_in_browser">Browser</string>
+    <string name="view_in">Open links in&#8230;</string>
+    <!-- AlertsDialogs -->
 
 
-    <!-- TextViews -->
+    <!-- Texts -->
     <string name="txt_welcome">Welcome</string>
     <string name="txt_cancel">Cancel</string>
+    <string name="txt_edit">Edit</string>
     <string name="txt_create">Create</string>
     <string name="txt_success">Success</string>
     <string name="txt_error">Error</string>
     <string name="txt_ok">OK</string>
-    <!-- TextViews -->
-
-
-    <!-- TextViews MainActivity -->
-    <string name="txt_rss_channel">RSS \n Channel</string>
+    <string name="txt_last_update">Last Update</string>
     <string name="txt_category">Category</string>
-    <string name="txt_list_categories">Category\nList</string>
-    <string name="txt_rss_links_favorites">Favorites\nLinks RSS</string>
-    <!-- TextViews MainActivity -->
+    <string name="txt_update">Update</string>
+    <string name="txt_delete">Delete</string>
+    <string name="txt_rss_channel">RSS Channel</string>
+    <string name="txt_rss_links_favorites">Favorites Links RSS</string>
+    <!-- Texts -->
 
 
-    <!-- Dialog new RSS Channel -->
+    <!-- Hints -->
     <string name="hint_name_rss_channel">Name</string>
     <string name="hint_url_rss_channel">URL</string>
-    <!-- Dialog new RSS Channel -->
+    <!-- Hints -->
 
 
     <!-- Excepciones -->

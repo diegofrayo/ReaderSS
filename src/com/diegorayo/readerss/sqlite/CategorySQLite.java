@@ -36,11 +36,10 @@ public class CategorySQLite {
 
 		if (category != null) {
 			ContentValues values = new ContentValues();
-			//values.put("id", 0);
+
 			values.put("name", category.getName());
 
 			long idRow = db.insert("category", null, values);
-			// db.close();
 
 			if (idRow != -1) {
 				category.setId((int) idRow);
@@ -64,7 +63,6 @@ public class CategorySQLite {
 			String whereArgs[] = new String[] { category.getId() + "" };
 
 			long idRow = db.update("category", values, "id = ?", whereArgs);
-			// db.close();
 
 			if (idRow != -1) {
 				return category;
@@ -84,7 +82,6 @@ public class CategorySQLite {
 		String whereArgs[] = new String[] { idCategory + "" };
 
 		long idRow = db.delete("category", "id = ?", whereArgs);
-		// db.close();
 
 		if (idRow == 1) {
 			return true;
@@ -102,7 +99,6 @@ public class CategorySQLite {
 
 		Cursor selection = db.query("category", columns, "id = ?", whereArgs,
 				null, null, null);
-		// db.close();
 
 		if (selection.moveToFirst()) {
 			Category category = new Category();
@@ -119,8 +115,12 @@ public class CategorySQLite {
 		List<Category> listCategories = new ArrayList<Category>();
 		String[] columns = new String[] { "id", "name" };
 
-		Cursor selection = db.query("category", columns, null, null, null,
-				null, null);
+		Cursor selection = db.query("category", columns, "id != 1", null, null,
+				null, "name asc");
+
+		Category defaultCategory = new Category("default");
+		defaultCategory.setId(1);
+		listCategories.add(0, defaultCategory);
 
 		if (selection.moveToFirst()) {
 			do {
@@ -130,8 +130,6 @@ public class CategorySQLite {
 				listCategories.add(category);
 			} while (selection.moveToNext());
 		}
-
-		// db.close();
 
 		return listCategories;
 	}

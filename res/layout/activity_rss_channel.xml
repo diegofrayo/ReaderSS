@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- Title Bar -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_title_app"
+        android:padding="5dp" >
+
+        <ImageView
+            android:id="@+id/icontitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_title_app" />
+
+        <com.diegorayo.readerss.adapters.CustomTextView
+            android:id="@+id/textViewTitleApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/icontitle"
+            android:text="@string/app_name"
+            android:textColor="@color/color_secundary"
+            android:textSize="45sp" >
+        </com.diegorayo.readerss.adapters.CustomTextView>
+    </RelativeLayout>
+
+    <!-- Info RSS Channel -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/txtLastUpdate"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="3dp"
+            android:gravity="right"
+            android:textColor="@color/color_primary"
+            android:textSize="@dimen/size_small"
+            android:textStyle="italic" />
+    </LinearLayout>
+
+    <!-- Body -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bg_light"
+        android:orientation="vertical" >
+
+        <!-- Content (List Links RSS) -->
+
+        <ListView
+            android:id="@+id/listLinksRSSChannel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </ListView>
+    </LinearLayout>
+
+</LinearLayout>

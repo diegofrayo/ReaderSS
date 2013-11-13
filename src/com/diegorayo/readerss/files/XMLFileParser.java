@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import com.diegorayo.readerss.entitys.RSSLink;
 
@@ -32,7 +33,7 @@ public class XMLFileParser {
 	 * @throws ParserConfigurationException
 	 */
 	public LinkedList<RSSLink> parse(String url) throws SAXException,
-			IOException, ParserConfigurationException {
+			IOException, ParserConfigurationException, SAXParseException {
 
 		LinkedList<RSSLink> listRSSLinks = new LinkedList<RSSLink>();
 		RSSLink rssLink;
@@ -59,7 +60,8 @@ public class XMLFileParser {
 				} else if (propertyName.equalsIgnoreCase("link")) {
 					rssLink.setUrl(propertyRead.getFirstChild().getNodeValue());
 				} else if (propertyName.equalsIgnoreCase("pubdate")) {
-					rssLink.setDate(propertyRead.getFirstChild().getNodeValue());
+					rssLink.setDate(propertyRead.getFirstChild().getNodeValue()
+							.substring(0, 25));
 				} else if (propertyName.equalsIgnoreCase("description")) {
 					rssLink.setDescription(this.getTextNode(propertyRead));
 				}
@@ -78,11 +80,11 @@ public class XMLFileParser {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
-	public static boolean documentIsXMLFile(String urlLocal) throws SAXException,
-			IOException, ParserConfigurationException {
+	public static boolean documentIsXMLFile(String urlLocal) throws Exception {
 
+		File fileXML = new File(urlLocal);
 		Document document = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().parse(urlLocal);
+				.newDocumentBuilder().parse(fileXML);
 		Element root = document.getDocumentElement();
 		NodeList listItems = root.getElementsByTagName("channel");
 
@@ -107,7 +109,7 @@ public class XMLFileParser {
 			text.append(fragments.item(k).getNodeValue());
 		}
 
-		return text.toString();
+		String string = text.toString();
+		return string;
 	}
-
 }

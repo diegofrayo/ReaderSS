@@ -45,7 +45,7 @@ public class FavoriteRSSLinkSQLite {
 						.getId());
 
 				long idRow = db.insert("favorite_link_rss", null, values);
-				// db.close();
+				
 
 				if (idRow != -1) {
 					rssLink.setId((int) idRow);
@@ -67,12 +67,12 @@ public class FavoriteRSSLinkSQLite {
 			throws DataBaseTransactionException {
 
 		ContentValues values = new ContentValues();
-		values.put("rss_parent", -1);
+		values.put("rss_channel_parent", -1);
 		String whereArgs[] = new String[] { idRSSChannelParent + "" };
 
-		long idRow = db.update("favorite_link_rss", values, "rss_parent = ?",
+		long idRow = db.update("favorite_link_rss", values, "rss_channel_parent = ?",
 				whereArgs);
-		// db.close();
+		
 
 		if (idRow != -1) {
 			return true;
@@ -128,7 +128,7 @@ public class FavoriteRSSLinkSQLite {
 			} while (selection.moveToNext());
 		}
 
-		// db.close();
+		
 
 		return listFavoriteRSSLinks;
 	}
