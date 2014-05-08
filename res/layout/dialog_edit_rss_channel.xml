@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:gravity="center"
-        android:text="@string/edit_rss_channel"
-        android:textSize="@dimen/size_large"
+        android:text="@string/txt_edit_rss_channel"
+        android:textSize="@dimen/size_font_large"
         android:textStyle="bold" />
 
     <EditText
@@ -19,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:hint="@string/hint_name_rss_channel"
+        android:hint="@string/hint_name"
         android:inputType="text"
         android:maxLength="40" />
 
@@ -27,8 +27,8 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/txt_category"
-        android:textSize="@dimen/size_base" />
+        android:text="@string/word_category"
+        android:textSize="@dimen/size_font_medium" />
 
     <Spinner
         android:id="@+id/spnListCategories"
@@ -47,8 +47,8 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/txt_edit"
-            android:textColor="@color/color_primary"
+            android:text="@string/word_edit"
+            android:textColor="@color/color_text"
             android:textStyle="bold" />
 
         <Button
@@ -56,8 +56,8 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/txt_cancel"
-            android:textColor="@color/color_primary" />
+            android:text="@string/word_cancel"
+            android:textColor="@color/color_text" />
     </LinearLayout>
 
 </LinearLayout>

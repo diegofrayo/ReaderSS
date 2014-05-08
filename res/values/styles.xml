@@ -1,15 +1,10 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-    </style>
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme"></style>
-
-    <style name="TextsIconsMainActivity" parent="AppBaseTheme">
-        <item name="android:textSize">15sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/color_black</item>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="">
+        <!-- Customize your theme here. -->
     </style>
 
 </resources>
+
+<!-- Theme.AppCompat.Light.DarkActionBar -->

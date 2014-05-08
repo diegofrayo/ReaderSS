@@ -10,8 +10,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:textColor="@color/color_primary"
-        android:textSize="@dimen/size_large"
+        android:textColor="@color/color_text"
+        android:textSize="@dimen/size_font_large"
         android:textStyle="bold" >
     </TextView>
 
@@ -22,20 +22,8 @@
         android:layout_below="@+id/txt_list_rss_channel_name"
         android:layout_marginRight="5dp"
         android:gravity="right"
-        android:textColor="@color/color_last_update"
-        android:textSize="@dimen/size_small"
+        android:textSize="@dimen/size_font_small"
         android:textStyle="bold|italic" >
     </TextView>
 
 </RelativeLayout>
-<!--
-           <TextView
-        android:id="@+id/txt_list_rss_channel_url"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_list_rss_channel_name"
-        android:textColor="@color/color_links"
-        android:textSize="@dimen/size_base"
-        android:textStyle="bold" >
-    </TextView>
--->

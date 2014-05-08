@@ -8,27 +8,17 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_title_app"
+        android:background="@color/color_bg_title_app"
         android:padding="5dp" >
-
-        <ImageView
-            android:id="@+id/icontitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_title_app" />
 
         <com.diegorayo.readerss.adapters.CustomTextView
             android:id="@+id/textViewTitleApp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/icontitle"
             android:text="@string/app_name"
-            android:textColor="@color/color_secundary"
-            android:textSize="45sp" >
+            android:textColor="@color/color_white"
+            android:textSize="35sp" >
         </com.diegorayo.readerss.adapters.CustomTextView>
     </RelativeLayout>
 
@@ -37,7 +27,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/bg_light"
+        android:background="@color/color_white"
         android:gravity="right"
         android:orientation="vertical" >
 
@@ -54,17 +44,17 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/txt_welcome"
-                android:textColor="@color/color_primary"
-                android:textSize="@dimen/size_base"
+                android:text="@string/word_welcome"
+                android:textColor="@color/color_text"
+                android:textSize="@dimen/size_font_medium"
                 android:textStyle="normal" />
 
             <TextView
-                android:id="@+id/txt_welcome_user"
+                android:id="@+id/word_welcome_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_primary"
-                android:textSize="@dimen/size_base"
+                android:textColor="@color/color_text"
+                android:textSize="@dimen/size_font_medium"
                 android:textStyle="bold|italic" />
         </LinearLayout>
 

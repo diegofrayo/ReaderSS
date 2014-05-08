@@ -4,72 +4,58 @@ import java.util.List;
 
 /**
  * @author Diego Rayo
- * @version 1 <br />
- *          Description
+ * @version 2 <br />
+ * 
  */
 public class RSSChannel {
 
 	/**
-	 * 
-	 */
+     *
+     */
 	private int id;
 
 	/**
-	 * 
-	 */
+     *
+     */
 	private String url;
 
 	/**
-	 * 
-	 */
+     *
+     */
 	private String name;
 
 	/**
-	 * 
-	 */
+     *
+     */
 	private List<RSSLink> listRSSLinks;
 
 	/**
-	 * 
-	 */
+     *
+     */
 	private Category category;
 
 	/**
-	 * 
+	 * Fecha y hora de la ultima vez que fue actualizado el canal por el usuario
 	 */
 	private String lastUpdate;
 
 	/**
-	 * 
-	 */
-	private boolean isModified;
-
-	/**
-	 * 
+	 * Es la fecha del RSSLink mas reciente del canal
 	 */
 	private String dateLastRSSLink;
 
 	/**
-	 * 
-	 */
-	private int lastContentLengthXMLFile;
-
-	/**
-	 * 
 	 * @param url
 	 * @param name
 	 */
 	public RSSChannel(String url, String name) {
-		super();
+
 		this.url = url;
 		this.name = name;
 	}
 
-	/**
-	 * 
-	 */
 	public RSSChannel() {
-		super();
+
 	}
 
 	public int getId() {
@@ -120,14 +106,6 @@ public class RSSChannel {
 		this.lastUpdate = lastUpdate;
 	}
 
-	public boolean isModified() {
-		return isModified;
-	}
-
-	public void setModified(boolean isModified) {
-		this.isModified = isModified;
-	}
-
 	public String getDateLastRSSLink() {
 		return dateLastRSSLink;
 	}
@@ -136,12 +114,10 @@ public class RSSChannel {
 		this.dateLastRSSLink = dateLastRSSLink;
 	}
 
-	public int getLastContentLengthXMLFile() {
-		return lastContentLengthXMLFile;
-	}
+	@Override
+	public String toString() {
 
-	public void setLastContentLengthXMLFile(int lastContentLengthXMLFile) {
-		this.lastContentLengthXMLFile = lastContentLengthXMLFile;
+		return name;
 	}
 
 }

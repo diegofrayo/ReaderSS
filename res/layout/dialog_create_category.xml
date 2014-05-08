@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:gravity="center"
-        android:text="@string/create_category"
-        android:textSize="@dimen/size_large"
+        android:text="@string/txt_create_category"
+        android:textSize="@dimen/size_font_large"
         android:textStyle="bold" />
 
     <EditText
@@ -20,7 +20,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:hint="@string/hint_name_rss_channel"
+        android:hint="@string/hint_name"
         android:inputType="text"
         android:maxLength="20" />
 
@@ -36,17 +36,17 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/txt_create"
-            android:textColor="@color/color_primary"
+            android:text="@string/word_create"
+            android:textColor="@color/color_text"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/txt_cancel"
-            android:textColor="@color/color_primary" />
+            android:layout_weight="1" 
+            android:text="@string/word_cancel"
+            android:textColor="@color/color_text" />
     </LinearLayout>
 
 </LinearLayout>

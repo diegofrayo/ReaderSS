@@ -2,8 +2,8 @@ package com.diegorayo.readerss.entitys;
 
 /**
  * @author Diego Rayo
- * @version 1 <br />
- *          Description- Sirve pa 2 cosas
+ * @version 2 <br />
+ * 
  */
 public class RSSLink {
 
@@ -38,7 +38,8 @@ public class RSSLink {
 	private RSSChannel rssChannelParent;
 
 	/**
-	 * 
+	 * Al actualizar un canal rss, este atributo ayuda a saber si el link ya
+	 * habia sido visto por el usuario o es nuevo para el
 	 */
 	private boolean isNew;
 
@@ -55,11 +56,8 @@ public class RSSLink {
 		this.date = date;
 	}
 
-	/**
-	 * 
-	 */
 	public RSSLink() {
-		super();
+
 	}
 
 	public int getId() {

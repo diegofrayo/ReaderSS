@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
-        android:hint="@string/insert_username"
+        android:hint="@string/txt_insert_username"
         android:inputType="text"
         android:maxLength="20" />
 
@@ -18,7 +18,7 @@
         android:id="@+id/btn_insert_username"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/txt_create"
-        android:textColor="@color/color_primary" />
+        android:text="@string/word_create"
+        android:textColor="@color/color_text" />
 
 </LinearLayout>

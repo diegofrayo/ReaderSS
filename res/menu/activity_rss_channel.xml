@@ -3,23 +3,23 @@
     <item
         android:id="@+id/btn_menu_edit_rss_channel"
         android:icon="@drawable/ic_edit_menu"
-        android:title="@string/txt_edit"/>
+        android:title="@string/word_edit"/>
     <item
         android:id="@+id/btn_menu_delete_rss_channel"
         android:icon="@drawable/ic_delete_menu"
-        android:title="@string/txt_delete"/>
+        android:title="@string/word_delete"/>
     <item
         android:id="@+id/btn_update_rss_channel"
         android:icon="@drawable/ic_update"
-        android:title="@string/txt_update"/>
+        android:title="@string/word_update"/>
     <item
         android:id="@+id/btn_view_in_app"
         android:icon="@drawable/ic_view_in"
-        android:title="@string/view_in">
+        android:title="@string/txt_view_in">
         <menu>
             <item
                 android:id="@+id/btn_submenu_view_in_browser"
-                android:title="@string/view_in_browser"/>
+                android:title="@string/word_browser"/>
             <item
                 android:id="@+id/btn_submenu_view_in_app"
                 android:title="@string/app_name"/>

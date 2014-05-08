@@ -1,8 +1,6 @@
 <resources>
-
-    <dimen name="size_base">18sp</dimen>
-    <dimen name="size_large">22sp</dimen>
-    <dimen name="size_small">14sp</dimen>
-    <dimen name="image_link_rss">80dp</dimen>
-
+    <dimen name="size_font_small">12sp</dimen>
+    <dimen name="size_font_medium">14sp</dimen>
+    <dimen name="size_font_large">16sp</dimen>
+    <dimen name="size_image_link_rss">45dp</dimen>
 </resources>

@@ -25,6 +25,8 @@ import com.diegorayo.readerss.entitys.RSSLink;
 public class XMLFileParser {
 
 	/**
+	 * Metodo para leer un archivo XML en el dispositivo, y obtener sus
+	 * propiedades
 	 * 
 	 * @param url
 	 * @return
@@ -47,6 +49,7 @@ public class XMLFileParser {
 		NodeList listItems = root.getElementsByTagName("item");
 
 		for (int i = 0; i < listItems.getLength(); i++) {
+
 			rssLink = new RSSLink();
 			Node itemRead = listItems.item(i);
 			NodeList propertiesItem = itemRead.getChildNodes();
@@ -55,44 +58,27 @@ public class XMLFileParser {
 
 				Node propertyRead = propertiesItem.item(j);
 				String propertyName = propertyRead.getNodeName();
+
 				if (propertyName.equalsIgnoreCase("title")) {
+
 					rssLink.setTitle(this.getTextNode(propertyRead));
 				} else if (propertyName.equalsIgnoreCase("link")) {
+
 					rssLink.setUrl(propertyRead.getFirstChild().getNodeValue());
 				} else if (propertyName.equalsIgnoreCase("pubdate")) {
+
 					rssLink.setDate(propertyRead.getFirstChild().getNodeValue()
 							.substring(0, 25));
 				} else if (propertyName.equalsIgnoreCase("description")) {
+
 					rssLink.setDescription(this.getTextNode(propertyRead));
 				}
 			}
+
 			listRSSLinks.add(rssLink);
 		}
 
 		return listRSSLinks;
-	}
-
-	/**
-	 * 
-	 * @param url
-	 * @return
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 */
-	public static boolean documentIsXMLFile(String urlLocal) throws Exception {
-
-		File fileXML = new File(urlLocal);
-		Document document = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().parse(fileXML);
-		Element root = document.getDocumentElement();
-		NodeList listItems = root.getElementsByTagName("channel");
-
-		if (listItems.getLength() == 1) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -112,4 +98,31 @@ public class XMLFileParser {
 		String string = text.toString();
 		return string;
 	}
+
+	/**
+	 * Este metodo sirve para saber si el documento descargado al RSSChannel, es
+	 * realmente un archivo XML valido
+	 * 
+	 * @param rssChannel
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean documentIsXMLFile(String absolutePathFile)
+			throws Exception {
+
+		File fileXML = new File(absolutePathFile);
+
+		Document document = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder().parse(fileXML);
+		Element root = document.getDocumentElement();
+		NodeList listItems = root.getElementsByTagName("channel");
+
+		if (listItems.getLength() == 1) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 }

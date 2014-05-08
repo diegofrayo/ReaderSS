@@ -13,63 +13,87 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import com.diegorayo.readerss.R;
-import com.diegorayo.readerss.api.RSSReaderAPI;
+import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.Category;
 import com.diegorayo.readerss.entitys.RSSChannel;
 import com.diegorayo.readerss.entitys.RSSLink;
-import com.diegorayo.readerss.exceptions.EntityNullException;
+import com.diegorayo.readerss.exceptions.NullEntityException;
 import com.diegorayo.readerss.exceptions.URLDownloadFileException;
 
 /**
  * @author Diego Rayo
- * @version 1 <br />
- *          Description
+ * @version 2 <br />
+ *          Clase utilizadaa para gestionar archivos xml y carpetas.
  */
 public class FilesManagement {
 
 	/**
+	 * Metodo para crear un directorio. Cada categoria creada va a tener un
+	 * directorio
 	 * 
-	 * @param rssChannel
+	 * @param nameCategory
 	 * @return
-	 * @throws SAXException
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws EntityNullException
 	 */
-	public LinkedList<RSSLink> readFileXML(RSSChannel rssChannel)
-			throws SAXException, IOException, ParserConfigurationException,
-			EntityNullException {
+	public static boolean createDirectory(String nameCategory) {
 
-		return new XMLFileParser().parse(createPathFile(rssChannel));
+		File directory = new File(createAbsolutePath(nameCategory, null));
+		return directory.mkdirs();
 	}
 
 	/**
+	 * Metodo para borrar un archivo
 	 * 
 	 * @param rssChannel
 	 * @return
+	 */
+	public static boolean deleteFile(RSSChannel rssChannel) {
+
+		File deleteFile = new File(createAbsolutePath(rssChannel.getCategory()
+				.getName(), rssChannel.getName()));
+
+		return deleteFile.delete();
+	}
+
+	/**
+	 * Metodo para borrar una categoria con todos sus archivos
+	 * 
+	 * @param nameCategory
+	 * @return
+	 */
+	public static boolean deleteFolder(String nameCategory) {
+
+		File pathFile = new File(createAbsolutePath(nameCategory, null));
+
+		File[] listFiles = pathFile.listFiles();
+
+		for (int i = 0; i < listFiles.length; i++) {
+
+			listFiles[i].delete();
+		}
+
+		return pathFile.delete();
+	}
+
+	/**
+	 * Metodo para descargar un archivo XML perteneciente a un RSSChannel
+	 * 
+	 * @param rssChannel
 	 * @throws IOException
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
-	 * @throws EntityNullException
+	 * @throws NullEntityException
 	 * @throws URLDownloadFileException
 	 */
-	@SuppressWarnings("resource")
-	public int downloadXMLFile(RSSChannel rssChannel) throws IOException,
-			SAXException, ParserConfigurationException, EntityNullException,
-			URLDownloadFileException {
+	public static void downloadXMLFile(RSSChannel rssChannel)
+			throws IOException, SAXException, ParserConfigurationException,
+			NullEntityException, URLDownloadFileException {
 
 		if (rssChannel != null) {
+
 			if (rssChannel.getCategory() != null) {
 
-				File pathFile = new File(RSSReaderAPI.PATH, rssChannel
-						.getCategory().getName());
-
-				if (pathFile.exists() == false) {
-					pathFile.mkdirs();
-				}
-
-				File downloadFile = new File(pathFile, rssChannel.getName()
-						+ ".xml");
+				File downloadFile = new File(createAbsolutePath(rssChannel
+						.getCategory().getName(), rssChannel.getName()));
 
 				FileOutputStream fout = new FileOutputStream(downloadFile);
 
@@ -86,8 +110,11 @@ public class FilesManagement {
 
 				int sizeFile = urlConnection.getContentLength();
 
-				if (sizeFile > 600000) {
+				if (sizeFile > 200000) {
+
 					deleteFile(rssChannel);
+					fout.close();
+					urlConnection.disconnect();
 					throw new URLDownloadFileException(
 							R.string.exc_URLDownloadFileException_1);
 				}
@@ -95,33 +122,17 @@ public class FilesManagement {
 				// this will be used in reading the data from the internet
 				InputStream inputStream = urlConnection.getInputStream();
 
-				// this is the total size of the file
-				// int totalSize = urlConnection.getContentLength();
-
-				// variable to store total downloaded bytes
-				// int downloadedSize = 0;
-
 				// create a buffer...
 				byte[] buffer = new byte[1024];
-				int bufferLength = 0; // used to store a temporary size of the
-										// buffer
+				int bufferLength = 0;
 
 				// now, read through the input buffer and write the contents to
-				// the
-				// file
+				// the file
 				while ((bufferLength = inputStream.read(buffer)) > 0) {
 
 					// add the data in the buffer to the file in the file output
 					// stream (the file on the sd card
 					fout.write(buffer, 0, bufferLength);
-
-					// add up the size so we know how much is downloaded
-					// downloadedSize += bufferLength;
-
-					// this is where you would do something to report the
-					// prgress,
-					// like this maybe
-
 				}
 
 				fout.close();
@@ -129,10 +140,14 @@ public class FilesManagement {
 				urlConnection.disconnect();
 
 				try {
-					XMLFileParser.documentIsXMLFile(createPathFile(rssChannel));
+
+					XMLFileParser.documentIsXMLFile(createAbsolutePath(
+							rssChannel.getCategory().getName(),
+							rssChannel.getName()));
 				} catch (Exception e) {
 
 					if (downloadFile.exists()) {
+
 						deleteFile(rssChannel);
 					}
 
@@ -141,147 +156,100 @@ public class FilesManagement {
 							R.string.exc_URLDownloadFileException_2);
 				}
 
-				return sizeFile;
-
-			}
-			throw new EntityNullException(Category.class.getSimpleName());
-		}
-
-		throw new EntityNullException(RSSChannel.class.getSimpleName());
-	}
-
-	/**
-	 * 
-	 * @param rssChannel
-	 * @throws EntityNullException
-	 */
-	public void deleteFile(RSSChannel rssChannel) throws EntityNullException {
-
-		File downloadFile = new File(createPathFile(rssChannel));
-		downloadFile.delete();
-	}
-
-	/**
-	 * 
-	 * @param category
-	 * @throws EntityNullException
-	 */
-	public void deleteFolder(Category category) throws EntityNullException {
-
-		if (category != null) {
-
-			File pathFile = new File(RSSReaderAPI.PATH, category.getName());
-
-			File[] listFiles = pathFile.listFiles();
-			for (int i = 0; i < listFiles.length; i++) {
-				listFiles[i].delete();
+				return;
 			}
 
-			pathFile.delete();
-
-			return;
+			throw new NullEntityException(Category.class.getSimpleName());
 		}
 
-		throw new EntityNullException(Category.class.getSimpleName());
+		throw new NullEntityException(RSSChannel.class.getSimpleName());
 	}
 
 	/**
+	 * Metodo que se utiliza para mover un archivo de una carpeta a otra
 	 * 
-	 * @param rssChannel
-	 * @param newName
-	 * @throws EntityNullException
-	 */
-	public void renameFile(RSSChannel rssChannel, String newName)
-			throws EntityNullException {
-
-		File oldFile = new File(createPathFile(rssChannel));
-		rssChannel.setName(newName);
-		File newFile = new File(createPathFile(rssChannel));
-
-		oldFile.renameTo(newFile);
-	}
-
-	/**
-	 * 
-	 * @param category
-	 * @param newName
-	 * @throws EntityNullException
-	 */
-	public void renameFolder(Category category, String newName)
-			throws EntityNullException {
-
-		if (category != null) {
-
-			File oldFile = new File(RSSReaderAPI.PATH + File.separator
-					+ category.getName());
-
-			File newFile = new File(RSSReaderAPI.PATH + File.separator
-					+ newName);
-
-			oldFile.renameTo(newFile);
-
-			return;
-
-		}
-
-		throw new EntityNullException(Category.class.getSimpleName());
-	}
-
-	/**
-	 * 
-	 * @param oldRSSChannel
-	 * @param editRSSChannel
-	 * @throws EntityNullException
-	 */
-	public void moveFile(RSSChannel oldRSSChannel, RSSChannel editRSSChannel)
-			throws EntityNullException {
-
-		File oldFile = new File(createPathFile(oldRSSChannel));
-		File newFile = new File(createPathFile(editRSSChannel));
-
-		oldFile.renameTo(newFile);
-	}
-
-	/**
-	 * 
-	 * @param category
+	 * @param fileName
+	 * @param currentPath
+	 * @param newPath
 	 * @return
-	 * @throws EntityNullException
 	 */
-	public boolean createDirectory(Category category)
-			throws EntityNullException {
+	public static boolean moveFile(String fileName, String currentPath,
+			String newPath) {
 
-		if (category != null) {
-			File directory = new File(RSSReaderAPI.PATH + File.separator
-					+ category.getName());
-			return directory.mkdirs();
-		}
+		File oldFile = new File(createAbsolutePath(currentPath, fileName));
+		File newFile = new File(createAbsolutePath(newPath, fileName));
 
-		throw new EntityNullException(Category.class.getSimpleName());
+		return oldFile.renameTo(newFile);
 	}
 
 	/**
+	 * Metodo que lee un archivo XML
 	 * 
 	 * @param rssChannel
 	 * @return
-	 * @throws EntityNullException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @throws ParserConfigurationException
 	 */
-	private String createPathFile(RSSChannel rssChannel)
-			throws EntityNullException {
+	public static LinkedList<RSSLink> readFileXML(RSSChannel rssChannel)
+			throws SAXException, IOException, ParserConfigurationException,
+			NullEntityException {
 
-		if (rssChannel != null) {
-			if (rssChannel.getCategory() != null) {
-
-				String pathFile = RSSReaderAPI.PATH + File.separator
-						+ rssChannel.getCategory().getName() + File.separator
-						+ rssChannel.getName() + ".xml";
-				return pathFile;
-			}
-
-			throw new EntityNullException(Category.class.getSimpleName());
-		}
-
-		throw new EntityNullException(RSSChannel.class.getSimpleName());
+		return new XMLFileParser().parse(createAbsolutePath(rssChannel
+				.getCategory().getName(), rssChannel.getName()));
 	}
 
+	/**
+	 * Metodo se utiliza cuando se edita un RSSChannel.
+	 * 
+	 * @param oldName
+	 * @param newName
+	 * @return
+	 */
+	public static boolean renameFile(String pathFiles, String oldName,
+			String newName) {
+
+		File oldFile = new File(createAbsolutePath(pathFiles, oldName));
+		File newFile = new File(createAbsolutePath(pathFiles, newName));
+
+		return oldFile.renameTo(newFile);
+	}
+
+	/**
+	 * Metodo utilizado cuando se edita el nombre de una categoria. Le cambia el
+	 * nombre a una carpeta
+	 * 
+	 * @param oldName
+	 * @param newName
+	 * @return
+	 */
+	public static boolean renameFolder(String oldName, String newName) {
+
+		File oldFile = new File(createAbsolutePath(oldName, null));
+		File newFile = new File(createAbsolutePath(newName, null));
+
+		return oldFile.renameTo(newFile);
+	}
+
+	/**
+	 * Metodo que retorna la ruta absoluta de un archivo o una carpeta
+	 * 
+	 * @param folderName
+	 * @param fileName
+	 * @return
+	 */
+	private static String createAbsolutePath(String folderName, String fileName) {
+
+		String absolutePath = ApplicationContext
+				.getStringResource(R.string.path_app_files)
+				+ File.separator
+				+ folderName;
+
+		if (fileName != null) {
+
+			absolutePath += File.separator + fileName + ".xml";
+		}
+
+		return absolutePath;
+	}
 }

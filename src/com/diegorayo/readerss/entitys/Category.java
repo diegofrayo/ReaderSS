@@ -4,8 +4,8 @@ import java.util.List;
 
 /**
  * @author Diego Rayo
- * @version 1 <br />
- *          Description
+ * @version 2 <br />
+ * 
  */
 public class Category {
 
@@ -29,14 +29,12 @@ public class Category {
 	 * @param name
 	 */
 	public Category(String name) {
+
 		this.name = name;
 	}
 
-	/**
-	 * 
-	 */
 	public Category() {
-		super();
+
 	}
 
 	public String getName() {
@@ -65,6 +63,7 @@ public class Category {
 
 	@Override
 	public String toString() {
+
 		return name;
 	}
 

@@ -1,8 +1,7 @@
 package com.diegorayo.readerss.adapters;
 
 import java.util.List;
-import com.diegorayo.readerss.R;
-import com.diegorayo.readerss.entitys.RSSLink;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.diegorayo.readerss.R;
+import com.diegorayo.readerss.entitys.RSSLink;
 
 /**
  * @author Diego Rayo
@@ -56,7 +58,8 @@ public class MyAdapterListRSSLinks extends ArrayAdapter<RSSLink> {
 		txt.setText(rssLink.getDate() + " ");
 
 		if (rssLink.isNew()) {
-			row.setBackgroundResource(R.color.color_bg_new);
+
+			row.setBackgroundResource(R.color.color_bg_new_rss_link);
 		}
 
 		return row;

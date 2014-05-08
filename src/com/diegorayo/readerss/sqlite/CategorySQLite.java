@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.diegorayo.readerss.entitys.Category;
 import com.diegorayo.readerss.exceptions.DataBaseTransactionException;
-import com.diegorayo.readerss.exceptions.EntityNullException;
+import com.diegorayo.readerss.exceptions.NullEntityException;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -13,67 +13,63 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * @author Diego Rayo
- * @version 1 <br />
- *          Description
+ * @version 2 <br />
+ *          Clase que contiene los metodos (CRUD) de la entidad Category.
+ *          Utiliza SQLite
  */
 public class CategorySQLite {
 
 	/**
-	 * 
+	 * Conexion a la base de datos
 	 */
 	private SQLiteDatabase db;
 
 	/**
 	 * 
 	 * @param db
+	 *            - Conexion a la base de datos
 	 */
 	public CategorySQLite(SQLiteDatabase db) {
+
 		this.db = db;
 	}
 
-	public Category createCategory(Category category)
-			throws EntityNullException, DataBaseTransactionException {
+	public Category create(Category category) throws NullEntityException,
+			DataBaseTransactionException {
 
-		if (category != null) {
-			ContentValues values = new ContentValues();
+		ContentValues values = new ContentValues();
+		values.put("name", category.getName());
 
-			values.put("name", category.getName());
+		long idRow = db.insert("category", null, values);
 
-			long idRow = db.insert("category", null, values);
+		if (idRow != -1) {
 
-			if (idRow != -1) {
-				category.setId((int) idRow);
-				return category;
-			}
-
-			throw new DataBaseTransactionException(
-					DataBaseTransactionException.OPERATION_INSERT,
-					Category.class.getSimpleName());
+			category.setId((int) idRow);
+			return category;
 		}
 
-		throw new EntityNullException(Category.class.getSimpleName());
+		throw new DataBaseTransactionException(
+				DataBaseTransactionException.INSERT_OPERATION,
+				Category.class.getSimpleName());
 	}
 
-	public Category editCategory(Category category)
-			throws DataBaseTransactionException, EntityNullException {
+	public Category edit(Category category)
+			throws DataBaseTransactionException, NullEntityException {
 
-		if (category != null) {
-			ContentValues values = new ContentValues();
-			values.put("name", category.getName());
-			String whereArgs[] = new String[] { category.getId() + "" };
+		ContentValues values = new ContentValues();
+		values.put("name", category.getName());
+		String whereArgs[] = new String[] { category.getId() + "" };
 
-			long idRow = db.update("category", values, "id = ?", whereArgs);
+		long idRow = db.update("category", values, "id = ?", whereArgs);
 
-			if (idRow != -1) {
-				return category;
-			}
+		if (idRow != -1) {
 
-			throw new DataBaseTransactionException(
-					DataBaseTransactionException.OPERATION_UPDATE,
-					Category.class.getSimpleName());
+			return category;
 		}
 
-		throw new EntityNullException(Category.class.getSimpleName());
+		throw new DataBaseTransactionException(
+				DataBaseTransactionException.UPDATE_OPERATION,
+				Category.class.getSimpleName());
 	}
 
 	public boolean deleteCategory(int idCategory)
@@ -84,11 +80,12 @@ public class CategorySQLite {
 		long idRow = db.delete("category", "id = ?", whereArgs);
 
 		if (idRow == 1) {
+
 			return true;
 		}
 
 		throw new DataBaseTransactionException(
-				DataBaseTransactionException.OPERATION_DELETE,
+				DataBaseTransactionException.DELETE_OPERATION,
 				Category.class.getSimpleName());
 	}
 
@@ -101,9 +98,11 @@ public class CategorySQLite {
 				null, null, null);
 
 		if (selection.moveToFirst()) {
+
 			Category category = new Category();
 			category.setId(selection.getInt(0));
 			category.setName(selection.getString(1));
+
 			return category;
 		}
 
@@ -112,7 +111,7 @@ public class CategorySQLite {
 
 	public List<Category> getListAllCategories() {
 
-		List<Category> listCategories = new ArrayList<Category>();
+		List<Category> categoryList = new ArrayList<Category>();
 		String[] columns = new String[] { "id", "name" };
 
 		Cursor selection = db.query("category", columns, "id != 1", null, null,
@@ -120,18 +119,22 @@ public class CategorySQLite {
 
 		Category defaultCategory = new Category("default");
 		defaultCategory.setId(1);
-		listCategories.add(0, defaultCategory);
+		categoryList.add(0, defaultCategory);
 
 		if (selection.moveToFirst()) {
+
 			do {
+				
 				Category category = new Category();
 				category.setId(selection.getInt(0));
 				category.setName(selection.getString(1));
-				listCategories.add(category);
+				
+				categoryList.add(category);
+
 			} while (selection.moveToNext());
 		}
 
-		return listCategories;
+		return categoryList;
 	}
 
 }
