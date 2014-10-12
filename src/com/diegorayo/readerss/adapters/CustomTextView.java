@@ -10,7 +10,7 @@ import android.widget.TextView;
 /**
  * @author Diego Rayo
  * @version 1 <br />
- *          Description
+ *          Clase utilizada para crear un textview con una fuente personalizada
  */
 public class CustomTextView extends TextView {
 
@@ -33,7 +33,7 @@ public class CustomTextView extends TextView {
 
 		Typeface tf = Typeface
 				.createFromAsset(ApplicationContext.getAssetsResource(),
-						"fonts/nobile_bold.ttf");
+						"fonts/MyriadBold.ttf");
 		setTypeface(tf);
 	}
 

@@ -21,14 +21,15 @@ import com.diegorayo.readerss.entitys.RSSLink;
 public class MyAdapterListRSSLinks extends ArrayAdapter<RSSLink> {
 
 	/**
-	 * 
+	 * Se utiliza para generar una fila del list view con contenido
+	 * personalizado. El contenido es llamado de un archivo xml
 	 */
-	LayoutInflater layoutInflater;
-
+	private LayoutInflater layoutInflater;
 	/**
-	 * 
+	 * Se utiliza para obtener cada rsschannel de la lista, y mostrarlo en el
+	 * listview
 	 */
-	List<RSSLink> listRSSLinks;
+	private List<RSSLink> listRSSLinks;
 
 	public MyAdapterListRSSLinks(Context context, int resource,
 			int textViewResourceId, List<RSSLink> listRSSLinks) {
@@ -46,6 +47,7 @@ public class MyAdapterListRSSLinks extends ArrayAdapter<RSSLink> {
 		RSSLink rssLink = (RSSLink) listRSSLinks.get(position);
 
 		if (row == null) {
+
 			row = layoutInflater
 					.inflate(R.layout.row_list_view_rss_links, null);
 		}
@@ -54,12 +56,18 @@ public class MyAdapterListRSSLinks extends ArrayAdapter<RSSLink> {
 				.findViewById(R.id.txt_list_rss_link_title);
 		txt.setText(rssLink.getTitle());
 
-		txt = (TextView) row.findViewById(R.id.txt_list_rss_link_date);
-		txt.setText(rssLink.getDate() + " ");
+		if (rssLink.getDate() != null) {
+			
+			txt = (TextView) row.findViewById(R.id.txt_list_rss_link_date);
+			txt.setText(rssLink.getDate() + " ");
+		}
 
 		if (rssLink.isNew()) {
 
 			row.setBackgroundResource(R.color.color_bg_new_rss_link);
+		} else {
+
+			row.setBackgroundResource(R.color.color_white);
 		}
 
 		return row;

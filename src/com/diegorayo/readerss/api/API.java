@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.webkit.URLUtil;
 
 import com.diegorayo.readerss.R;
+import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.Category;
 import com.diegorayo.readerss.entitys.RSSChannel;
 import com.diegorayo.readerss.entitys.RSSLink;
@@ -26,7 +27,6 @@ import com.diegorayo.readerss.sqlite.CategorySQLite;
 import com.diegorayo.readerss.sqlite.DatabaseConnection;
 import com.diegorayo.readerss.sqlite.RSSChannelSQLite;
 import com.diegorayo.readerss.util.UtilAPI;
-import com.diegorayo.readerss.util.UtilActivities;
 
 /**
  * @author Diego Rayo
@@ -39,22 +39,10 @@ public class API {
 	 */
 	private DatabaseConnection dbConnection;
 
-	/**
-	 * Atributo utilizado para crear la conexion a la base de datos, y para los
-	 * metodos que crean dialogos de informacion
-	 */
-	private Context context;
+	public API() {
 
-	/**
-	 * @param context
-	 *            - Parametro necesario para crear la conexion a la base de
-	 *            datos Sqlite
-	 */
-	public API(Context context) {
-
-		this.dbConnection = new DatabaseConnection(context, "DatabaseApp.db",
-				null, 2);
-		this.context = context;
+		this.dbConnection = new DatabaseConnection(
+				ApplicationContext.getContext(), "DatabaseApp.db", null, 1);
 	}
 
 	/**
@@ -131,7 +119,7 @@ public class API {
 		throw new InvalidArgumentException();
 	}
 
-	public boolean deleteCategory(int idCategory)
+	public Category deleteCategory(int idCategory)
 			throws DataBaseTransactionException, NullEntityException,
 			FileSystemException {
 
@@ -147,7 +135,7 @@ public class API {
 
 		if (response) {
 
-			return response;
+			return categoryDelete;
 		} else {
 
 			categoryHelper.create(categoryDelete);
@@ -177,11 +165,13 @@ public class API {
 	 * ------ RSS Channel Methods ------
 	 */
 
-	public RSSChannel createRSSChannel(String name, String url, int idCategory)
+	public Object createRSSChannel(String name, String url, int idCategory)
 			throws DataBaseTransactionException, InvalidArgumentException,
 			FileSystemException, NullEntityException {
 
 		if (!name.trim().equals("") && URLUtil.isValidUrl(url)) {
+
+			String exception = "";
 
 			RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 					dbConnection.getWritableDatabase());
@@ -204,40 +194,41 @@ public class API {
 			} catch (URLDownloadFileException e) {
 
 				rssChannelHelper.delete(newRSSChannel.getId());
-				UtilActivities.createErrorDialog(context, e.getMessage());
+				exception = e.toString();
 				e.printStackTrace();
 
 			} catch (UnknownHostException e) {
 
 				rssChannelHelper.delete(newRSSChannel.getId());
-				UtilActivities.createErrorDialog(context, e.getMessage());
 				e.printStackTrace();
+				exception = e.getMessage();
 
 			} catch (IOException e) {
 
 				rssChannelHelper.delete(newRSSChannel.getId());
-				UtilActivities.createErrorDialog(context, e.getMessage());
 				e.printStackTrace();
+				exception = e.getMessage();
 
 			} catch (SAXException e) {
 
 				rssChannelHelper.delete(newRSSChannel.getId());
-				UtilActivities.createErrorDialog(context, e.getMessage());
 				e.printStackTrace();
+				exception = e.getMessage();
 
 			} catch (ParserConfigurationException e) {
 
 				rssChannelHelper.delete(newRSSChannel.getId());
-				UtilActivities.createErrorDialog(context, e.getMessage());
 				e.printStackTrace();
+				exception = e.getMessage();
 
 			} catch (NullEntityException e) {
 
 				rssChannelHelper.delete(newRSSChannel.getId());
-				UtilActivities.createErrorDialog(context, e.getMessage());
 				e.printStackTrace();
+				exception = e.toString();
 			}
 
+			return exception;
 		}
 
 		throw new InvalidArgumentException();
@@ -251,18 +242,24 @@ public class API {
 		if (!newName.trim().equals("")) {
 
 			RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
-					dbConnection.getWritableDatabase());
+					dbConnection.getReadableDatabase());
 			CategorySQLite categoryHelper = new CategorySQLite(
 					dbConnection.getReadableDatabase());
 
 			RSSChannel oldRSSChannel = rssChannelHelper
 					.getRSSChannelById(idRSSChannel);
+			rssChannelHelper = new RSSChannelSQLite(
+					dbConnection.getWritableDatabase());
 
-			RSSChannel rssChannelToEdit = oldRSSChannel;
-			// rssChannelToEdit.setId(idRSSChannel);
+			RSSChannel rssChannelToEdit = new RSSChannel();
+			rssChannelToEdit.setId(idRSSChannel);
 			rssChannelToEdit.setName(newName);
 			rssChannelToEdit.setCategory(categoryHelper
 					.getCategoryById(newIdCategory));
+			rssChannelToEdit.setLastUpdate(oldRSSChannel.getLastUpdate());
+			rssChannelToEdit.setDateLastRSSLink(oldRSSChannel
+					.getDateLastRSSLink());
+			rssChannelToEdit.setUrl(oldRSSChannel.getUrl());
 
 			rssChannelToEdit = rssChannelHelper.edit(rssChannelToEdit);
 
@@ -316,11 +313,11 @@ public class API {
 
 		boolean response = FilesManagement.deleteFile(rssChannelToDelete);
 
-		if (!response) {
-
-			rssChannelHelper.create(rssChannelToDelete);
-			throw new FileSystemException(R.string.error_delete_file);
-		}
+		// if (!response) {
+		//
+		// rssChannelHelper.create(rssChannelToDelete);
+		// throw new FileSystemException(R.string.error_delete_file);
+		// }
 
 		return response;
 	}
@@ -355,6 +352,22 @@ public class API {
 		return rssChannelHelper.getListRSSChannelsInACategory(idCategory);
 	}
 
+	public int getNumberRSSChannelsInACategory(int idCategory) {
+
+		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
+				dbConnection.getReadableDatabase());
+
+		return rssChannelHelper.getNumberRSSChannelsInACategory(idCategory);
+	}
+
+	public List<RSSChannel> getListAllRSSChannels() {
+
+		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
+				dbConnection.getReadableDatabase());
+
+		return rssChannelHelper.getListAllRSSChannels();
+	}
+
 	/*--------------------------------------------*/
 
 	/*
@@ -374,10 +387,14 @@ public class API {
 			// RSSChannel, y no se ha leido por primera vez
 			if (rssChannel.getDateLastRSSLink() == null) {
 
-				for (RSSLink rssLink : list) {
+				if (list.get(0).getDate() != null) {
 
-					rssLink.setNew(true);
+					for (RSSLink rssLink : list) {
+
+						rssLink.setNew(true);
+					}
 				}
+
 			} else {
 
 				for (RSSLink rssLink : list) {
@@ -402,7 +419,7 @@ public class API {
 		throw new NullEntityException(RSSChannel.class.getSimpleName());
 	}
 
-	public List<RSSLink> downloadXMLFileAndGetListRSSLinksOfRSSChannel(
+	public RSSChannel downloadXMLFileAndGetListRSSLinksOfRSSChannel(
 			RSSChannel rssChannel) throws NullEntityException, SAXException,
 			IOException, ParserConfigurationException,
 			URLDownloadFileException, InvalidArgumentException,
@@ -412,7 +429,7 @@ public class API {
 
 			FilesManagement.downloadXMLFile(rssChannel);
 
-			return getListRSSLinksOfRSSChannel(rssChannel).getListRSSLinks();
+			return getListRSSLinksOfRSSChannel(rssChannel);
 		}
 
 		throw new NullEntityException(RSSChannel.class.getSimpleName());
@@ -426,16 +443,16 @@ public class API {
 
 	public boolean getConfigurationToViewRSSLinks() {
 
-		SharedPreferences sharedPreferences = context.getSharedPreferences(
-				"Preferences", Context.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = ApplicationContext.getContext()
+				.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
 		return sharedPreferences.getBoolean("open_links_in_browser", true);
 	}
 
 	public void editConfigurationToViewRSSLinks(boolean option) {
 
-		SharedPreferences sharedPreferences = context.getSharedPreferences(
-				"Preferences", Context.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = ApplicationContext.getContext()
+				.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 
 		editor.putBoolean("open_links_in_browser", option);
@@ -446,14 +463,13 @@ public class API {
 			DataBaseTransactionException, InvalidArgumentException,
 			FileSystemException {
 
-		Category defaultCategory = getCategoryById(1);
+		int numberCategories = getListAllCategories().size();
 
-		if (defaultCategory == null) {
+		if (numberCategories == 0) {
 
-			createCategory("default");
-
-			SharedPreferences sharedPreferences = context.getSharedPreferences(
-					"Preferences", Context.MODE_PRIVATE);
+			SharedPreferences sharedPreferences = ApplicationContext
+					.getContext().getSharedPreferences("Preferences",
+							Context.MODE_PRIVATE);
 			SharedPreferences.Editor editor = sharedPreferences.edit();
 
 			editor.putBoolean("open_links_in_browser", true);
@@ -463,7 +479,7 @@ public class API {
 
 	public String getUsernameGoogle() {
 
-		return UtilAPI.getUsernameGoogle(context);
+		return UtilAPI.getUsernameGoogle(ApplicationContext.getContext());
 	}
 
 }

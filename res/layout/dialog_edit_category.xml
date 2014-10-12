@@ -22,7 +22,7 @@
         android:layout_marginBottom="15dp"
         android:hint="@string/hint_name"
         android:inputType="text"
-        android:maxLength="20" />
+        android:maxLength="25" />
 
     <LinearLayout
         android:layout_width="fill_parent"

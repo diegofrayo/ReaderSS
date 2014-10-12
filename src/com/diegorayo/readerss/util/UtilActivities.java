@@ -2,14 +2,18 @@ package com.diegorayo.readerss.util;
 
 import java.util.List;
 
-import com.diegorayo.readerss.R;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.diegorayo.readerss.R;
 import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.Category;
 
@@ -92,6 +96,21 @@ public class UtilActivities {
 	}
 
 	/**
+	 * Metodo para inflar contenido en la cabecera de la aplicacion
+	 * 
+	 * @param activity
+	 *            - Actividad a la cual se le va a inflar el contenido
+	 */
+	public static void inflateHeaderApp(Activity activity) {
+
+		RelativeLayout containerHeaderAPP = (RelativeLayout) activity
+				.findViewById(R.id.container_header_app);
+		LayoutInflater layoutInflater = (LayoutInflater) activity
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		layoutInflater.inflate(R.layout.header_app, containerHeaderAPP);
+	}
+
+	/**
 	 * Metodo para llenar con contenido un spinner
 	 * 
 	 * @param context
@@ -105,6 +124,17 @@ public class UtilActivities {
 				context, android.R.layout.simple_spinner_dropdown_item,
 				categoryList);
 		spinner.setAdapter(dataAdapter);
+	}
+
+	/**
+	 * Metodo para poner en pantalla, un mensaje de bienvenida con el nombre de
+	 * usuario del telefono
+	 */
+	public static void updateUsername(Activity activity, String username) {
+
+		TextView textViewWelcomeUser = (TextView) activity
+				.findViewById(R.id.word_welcome_username);
+		textViewWelcomeUser.setText(" " + username + " ");
 	}
 
 }

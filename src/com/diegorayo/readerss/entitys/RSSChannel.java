@@ -114,6 +114,24 @@ public class RSSChannel {
 		this.dateLastRSSLink = dateLastRSSLink;
 	}
 
+	public String getWebsite() {
+
+		String domain = "";
+
+		if (!getUrl().contains("co") && !getUrl().contains("com")
+				&& !getUrl().contains("net") && !getUrl().contains("es")
+				&& !getUrl().contains("fm")) {
+
+			domain = ".com";
+		}
+
+		return "www."
+				+ getUrl().substring(0, getUrl().indexOf("/", 7))
+						.replaceAll("http://", "").replaceAll("www.", "")
+						.replaceAll("rss.", "").replaceAll("feeds.", "")
+				+ domain;
+	}
+
 	@Override
 	public String toString() {
 

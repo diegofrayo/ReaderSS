@@ -228,4 +228,16 @@ public class RSSChannelSQLite {
 		throw new NullEntityException(RSSChannel.class.getSimpleName());
 	}
 
+	public int getNumberRSSChannelsInACategory(int idCategory) {
+
+		Cursor mCount = db
+				.rawQuery("select count(*) from rss_channel where category="
+						+ idCategory, null);
+		mCount.moveToFirst();
+		int count = mCount.getInt(0);
+		mCount.close();
+
+		return count;
+	}
+
 }

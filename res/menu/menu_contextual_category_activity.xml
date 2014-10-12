@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/btn_menu_context_delete_rss_channel"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/word_delete"/>
+        
+    <item
+        android:id="@+id/btn_menu_context_copy_url"
+        android:title="@string/word_copy"/>
+        
+
+</menu>

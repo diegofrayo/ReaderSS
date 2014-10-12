@@ -114,21 +114,17 @@ public class CategorySQLite {
 		List<Category> categoryList = new ArrayList<Category>();
 		String[] columns = new String[] { "id", "name" };
 
-		Cursor selection = db.query("category", columns, "id != 1", null, null,
+		Cursor selection = db.query("category", columns, null, null, null,
 				null, "name asc");
-
-		Category defaultCategory = new Category("default");
-		defaultCategory.setId(1);
-		categoryList.add(0, defaultCategory);
 
 		if (selection.moveToFirst()) {
 
 			do {
-				
+
 				Category category = new Category();
 				category.setId(selection.getInt(0));
 				category.setName(selection.getString(1));
-				
+
 				categoryList.add(category);
 
 			} while (selection.moveToNext());

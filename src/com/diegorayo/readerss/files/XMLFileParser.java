@@ -15,6 +15,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import android.annotation.SuppressLint;
+
 import com.diegorayo.readerss.entitys.RSSLink;
 
 /**
@@ -34,6 +36,7 @@ public class XMLFileParser {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
+	@SuppressLint("NewApi")
 	public LinkedList<RSSLink> parse(String url) throws SAXException,
 			IOException, ParserConfigurationException, SAXParseException {
 
@@ -41,41 +44,73 @@ public class XMLFileParser {
 		RSSLink rssLink;
 
 		File fileXML = new File(url);
-		FileInputStream fileInputStream = new FileInputStream(fileXML);
 
-		Document document = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().parse(fileInputStream);
-		Element root = document.getDocumentElement();
-		NodeList listItems = root.getElementsByTagName("item");
+		if (fileXML.exists()) {
 
-		for (int i = 0; i < listItems.getLength(); i++) {
+			FileInputStream fileInputStream = new FileInputStream(fileXML);
+			Document document = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder().parse(fileInputStream);
 
-			rssLink = new RSSLink();
-			Node itemRead = listItems.item(i);
-			NodeList propertiesItem = itemRead.getChildNodes();
+			Element root = document.getDocumentElement();
+			NodeList listItems = root.getElementsByTagName("item");
 
-			for (int j = 0; j < propertiesItem.getLength(); j++) {
+			for (int i = 0; i < listItems.getLength(); i++) {
 
-				Node propertyRead = propertiesItem.item(j);
-				String propertyName = propertyRead.getNodeName();
+				rssLink = new RSSLink();
+				Node itemRead = listItems.item(i);
+				NodeList propertiesItem = itemRead.getChildNodes();
 
-				if (propertyName.equalsIgnoreCase("title")) {
+				for (int j = 0; j < propertiesItem.getLength(); j++) {
 
-					rssLink.setTitle(this.getTextNode(propertyRead));
-				} else if (propertyName.equalsIgnoreCase("link")) {
+					Node propertyRead = propertiesItem.item(j);
+					String propertyName = propertyRead.getNodeName();
 
-					rssLink.setUrl(propertyRead.getFirstChild().getNodeValue());
-				} else if (propertyName.equalsIgnoreCase("pubdate")) {
+					if (propertyName.equalsIgnoreCase("title")) {
 
-					rssLink.setDate(propertyRead.getFirstChild().getNodeValue()
-							.substring(0, 25));
-				} else if (propertyName.equalsIgnoreCase("description")) {
+						String text = this.getTextNode(propertyRead);
+						// text = text.replaceAll("&#xE1;", "á")
+						// .replaceAll("&#xE9;", "é")
+						// .replaceAll("&#xED;", "í")
+						// .replaceAll("&#xF3;", "ó")
+						// .replaceAll("&#xFA;", "ú")
+						// .replaceAll("&#xC1;", "Á")
+						// .replaceAll("&#xC9;", "É")
+						// .replaceAll("&#xCD;", "Í")
+						// .replaceAll("&#xD3;", "Ó")
+						// .replaceAll("&#xDA;", "Ú")
+						// .replaceAll("&#xA0;", "#")
+						// .replaceAll("&#xBF;", "¿")
+						// .replaceAll("&#x22;", "\"")
+						// .replaceAll("&#x201C;", "\"")
+						// .replaceAll("&#x201D;", "\"")
+						// .replaceAll("&#xF1;", "ñ")
+						// .replaceAll("&#xA1;", "¡")
+						// .replaceAll("&#x26;", "&")
+						// .replaceAll("&#x3E;", ">")
+						// .replaceAll("&#x27;", "'")
+						// .replaceAll("&#x2026;", "...");
+						rssLink.setTitle(text);
+					} else if (propertyName.equalsIgnoreCase("link")) {
 
-					rssLink.setDescription(this.getTextNode(propertyRead));
+						rssLink.setUrl(propertyRead.getFirstChild()
+								.getNodeValue());
+					} else if (propertyName.equalsIgnoreCase("pubdate")) {
+
+						rssLink.setDate(propertyRead.getFirstChild()
+								.getNodeValue().substring(0, 25));
+					} else if (propertyName.equalsIgnoreCase("dc:date")) {
+
+						rssLink.setDate(propertyRead.getFirstChild()
+								.getNodeValue().substring(0, 10));
+					}
+
+					// else if (propertyName.equalsIgnoreCase("description")) {
+					// rssLink.setDescription(this.getTextNode(propertyRead));
+					// }
 				}
-			}
 
-			listRSSLinks.add(rssLink);
+				listRSSLinks.add(rssLink);
+			}
 		}
 
 		return listRSSLinks;

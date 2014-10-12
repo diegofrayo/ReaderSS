@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/item_menu_shared_link"
+        android:icon="@drawable/ic_shar"
+        android:title="@string/word_shared"/>
+
+</menu>

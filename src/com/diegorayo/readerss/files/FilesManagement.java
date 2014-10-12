@@ -92,11 +92,6 @@ public class FilesManagement {
 
 			if (rssChannel.getCategory() != null) {
 
-				File downloadFile = new File(createAbsolutePath(rssChannel
-						.getCategory().getName(), rssChannel.getName()));
-
-				FileOutputStream fout = new FileOutputStream(downloadFile);
-
 				// create the new connection
 				HttpURLConnection urlConnection = (HttpURLConnection) new URL(
 						rssChannel.getUrl()).openConnection();
@@ -105,55 +100,83 @@ public class FilesManagement {
 				urlConnection.setRequestMethod("GET");
 				urlConnection.setDoOutput(true);
 
+				System.out.println("dddd");
+
 				// and connect!
 				urlConnection.connect();
 
-				int sizeFile = urlConnection.getContentLength();
+				if (urlConnection.getResponseCode() == 200) {
 
-				if (sizeFile > 200000) {
+					int sizeFile = urlConnection.getContentLength();
 
-					deleteFile(rssChannel);
-					fout.close();
-					urlConnection.disconnect();
-					throw new URLDownloadFileException(
-							R.string.exc_URLDownloadFileException_1);
-				}
-
-				// this will be used in reading the data from the internet
-				InputStream inputStream = urlConnection.getInputStream();
-
-				// create a buffer...
-				byte[] buffer = new byte[1024];
-				int bufferLength = 0;
-
-				// now, read through the input buffer and write the contents to
-				// the file
-				while ((bufferLength = inputStream.read(buffer)) > 0) {
-
-					// add the data in the buffer to the file in the file output
-					// stream (the file on the sd card
-					fout.write(buffer, 0, bufferLength);
-				}
-
-				fout.close();
-				inputStream.close();
-				urlConnection.disconnect();
-
-				try {
-
-					XMLFileParser.documentIsXMLFile(createAbsolutePath(
-							rssChannel.getCategory().getName(),
-							rssChannel.getName()));
-				} catch (Exception e) {
-
-					if (downloadFile.exists()) {
+					if (sizeFile > 200000) {
 
 						deleteFile(rssChannel);
+						urlConnection.disconnect();
+						throw new URLDownloadFileException(
+								R.string.exc_URLDownloadFileException_1);
 					}
 
-					e.printStackTrace();
+					File downloadFile = new File(createAbsolutePath(rssChannel
+							.getCategory().getName(), rssChannel.getName()));
+
+					FileOutputStream fout = new FileOutputStream(downloadFile);
+
+					// this will be used in reading the data from the internet
+					InputStream inputStream = urlConnection.getInputStream();
+
+					// create a buffer...
+					byte[] buffer = new byte[1024];
+					int bufferLength = 0;
+
+					// now, read through the input buffer and write the contents
+					// to
+					// the file
+					while ((bufferLength = inputStream.read(buffer)) > 0) {
+
+						// add the data in the buffer to the file in the file
+						// output
+						// stream (the file on the sd card
+						fout.write(buffer, 0, bufferLength);
+					}
+
+					fout.close();
+					inputStream.close();
+					urlConnection.disconnect();
+
+					try {
+
+						boolean response = XMLFileParser
+								.documentIsXMLFile(createAbsolutePath(
+										rssChannel.getCategory().getName(),
+										rssChannel.getName()));
+
+						if (response == false) {
+
+							if (downloadFile.exists()) {
+
+								deleteFile(rssChannel);
+							}
+
+							throw new URLDownloadFileException(
+									R.string.exc_URLDownloadFileException_2);
+						}
+
+					} catch (Exception e) {
+
+						if (downloadFile.exists()) {
+
+							deleteFile(rssChannel);
+						}
+
+						e.printStackTrace();
+						throw new URLDownloadFileException(
+								R.string.exc_URLDownloadFileException_2);
+					}
+				} else {
+
 					throw new URLDownloadFileException(
-							R.string.exc_URLDownloadFileException_2);
+							R.string.exc_URLDownloadFileException_3);
 				}
 
 				return;

@@ -1,74 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ReaderSS</string>
+	<string name="app_name">ReaderSS</string>
 
-    <!-- Variables -->
-    <string name="path_app_files">/data/data/com.diegorayo.readerss/files</string>
-    <!-- Variables -->
+	<!-- Variables -->
+	<string name="path_app_files">/data/data/com.diegorayo.readerss/files</string>
+	<!-- Variables -->
 
+	<!-- Phrases Activities -->
+	<string name="txt_insert_username">Insert an username</string>
+	<string name="txt_create_rss_channel">Create a RSS Channel</string>
+	<string name="txt_create_category">Create a category</string>
+	<string name="txt_edit_rss_channel">Edit a RSS Channel</string>
+	<string name="txt_edit_category">Edit a category</string>
+	<string name="txt_qst_delete_category">Are you sure that want to delete this
+		category?\nThe RSS Channels contained in this category will be deleted
+	</string>
+	<string name="txt_qst_delete_rss_channel">Are you sure that want to delete this RSS Channel?
+	</string>
+	<string name="txt_view_in">Open links with&#8230;</string>
+	<string name="txt_load_data">Please, wait while the data loaded&#8230;</string>
+	<!-- Phrases Activities -->
 
-    <!-- Phrases Activities -->
-    <string name="txt_insert_username">Insert a username</string>
-    <string name="txt_create_rss_channel">Create a RSS Channel</string>
-    <string name="txt_create_category">Create a category</string>
-    <string name="txt_edit_rss_channel">Edit a RSS Channel</string>
-    <string name="txt_edit_category">Edit a category</string>
-    <string name="txt_edit_username">Edit your username</string>
-    <string name="txt_qst_delete_category">¿Esta seguro que desea borrar esta categoria?\nSe borraran todos los canales contenidos en ella</string>
-    <string name="txt_qst_delete_rss_channel">¿Esta seguro que desea eliminar Canal RSS?</string>
-    <string name="txt_view_in">Open links in&#8230;</string>
-    <!-- Phrases Activities -->
+	<!-- Words -->
+	<string name="word_welcome">Welcome</string>
+	<string name="word_cancel">Cancel</string>
+	<string name="word_edit">Edit</string>
+	<string name="word_create">Create</string>
+	<string name="word_success">Success</string>
+	<string name="word_error">Error</string>
+	<string name="word_ok">OK</string>
+	<string name="word_last_update">Last Update</string>
+	<string name="word_category">Category</string>
+	<string name="word_update">Update</string>
+	<string name="word_delete">Delete</string>
+	<string name="word_rss_channel">RSS Channel</string>
+	<string name="word_browser">Browser</string>
+	<string name="word_categories">Categories</string>
+	<string name="word_rss_channels">RSS Channels List</string>
+	<string name="word_posts">Posts</string>
+	<string name="word_shared">Share</string>
+	<string name="word_copy">Copy URL Of The RSS Channel</string>
+	<!-- Words -->
 
+	<!-- Hints -->
+	<string name="hint_name">Name</string>
+	<string name="hint_url">URL</string>
+	<!-- Hints -->
 
-    <!-- Words -->
-    <string name="word_welcome">Welcome</string>
-    <string name="word_cancel">Cancel</string>
-    <string name="word_edit">Edit</string>
-    <string name="word_create">Create</string>
-    <string name="word_success">Success</string>
-    <string name="word_error">Error</string>
-    <string name="word_ok">OK</string>
-    <string name="word_last_update">Last Update</string>
-    <string name="word_category">Category</string>
-    <string name="word_update">Update</string>
-    <string name="word_delete">Delete</string>
-    <string name="word_rss_channel">RSS Channel</string>
-    <string name="word_browser">Browser</string>
-    <!-- Words -->
+	<!-- Exceptions -->
+	<string name="exc_InvalidArgumentException">The Arguments inserted were not valid</string>
+	<string name="exc_URLDownloadFileException_1">URL Invalid. The file is very large</string>
+	<string name="exc_URLDownloadFileException_2">URL Invalid. The file is not XML</string>
+	<string name="exc_URLDownloadFileException_3">Cannot establish connection with the server
+	</string>
+	<string name="exc_NullEntityException">The entity of type "%"" inserted as argument, is
+		null
+	</string>
+	<string name="exc_DataBaseTransactionException">Failed the transaction of "1", of the entity "2"
+	</string>
+	<!-- Exceptions -->
 
+	<!-- Success messages -->
+	<string name="success_new_rss_channel">The RSS Channel has been created successfully
+	</string>
+	<string name="success_new_category">The Category has been created successfully</string>
+	<string name="success_edit_rss_channel">The RSS Channel has been edited successfully
+	</string>
+	<string name="success_edit_category">The Category has been edited successfully</string>
+	<string name="success_url_copiada">The URL has been copied successfully</string>
+	<!-- Success messages -->
 
-    <!-- Hints -->
-    <string name="hint_name">Name</string>
-    <string name="hint_url">URL</string>
-    <!-- Hints -->
-
-
-    <!-- Exceptions -->
-    <string name="exc_InvalidArgumentException">Los argumentos ingresados con invalidos. Ingrese bien los datos</string>
-    <string name="exc_URLDownloadFileException_1">URL Invalida. El archivo es demasiado pesado</string>
-    <string name="exc_URLDownloadFileException_2">URL Invalida. El archivo no es XML</string>
-    <string name="exc_NullEntityException">La entidad de tipo % ingresada como argumento, es nula</string>
-    <string name="exc_DataBaseTransactionException">Falló la transaccion de 1, de la entidad 2</string>
-    <!-- Exceptions -->
-
-
-    <!-- Success messages -->
-    <string name="success_new_rss_channel">The RSS Channel has been created successfully</string>
-    <string name="success_new_category">The Category has been created successfully</string>
-    <string name="success_edit_rss_channel">The RSS Channel has been edited successfully</string>
-    <string name="success_edit_category">The Category has been edited successfully</string>
-    <!-- Success messages -->
-
-
-    <!-- Error messages -->
-    <string name="error_create_folder">Error system. No se pudo crear una carpeta</string>
-    <string name="error_edit_folder">Error system. No se pudo modificar el nombre de una carpeta</string>
-    <string name="error_delete_folder">Error system. No se pudo eliminar una carpeta</string>
-    <string name="error_download_file">El archivo no pudo ser descargado</string>
-    <string name="error_edit_file">Error system. No se pudo editar un archivo</string>
-    <string name="error_delete_file">Error system. No se pudo eliminar un archivo</string>
-    <string name="error_no_internet_connection">No hay conexion a internet</string>
-    <!-- Error messages -->
+	<!-- Error messages -->
+	<string name="error_create_folder">System Error. Cannot create a folder</string>
+	<string name="error_edit_folder">System Error. Cannot modify the folders name
+	</string>
+	<string name="error_delete_folder">System Error. Cannot delete a folder</string>
+	<string name="error_download_file">The file cannot be downloaded</string>
+	<string name="error_edit_file">System Error. Cannot modify a file</string>
+	<string name="error_delete_file">System Error. Cannot remove a file</string>
+	<string name="error_no_internet_connection">There is not connection to internet</string>
+	<!-- Error messages -->
 
 </resources>

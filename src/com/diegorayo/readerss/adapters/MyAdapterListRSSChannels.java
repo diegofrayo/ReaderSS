@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.diegorayo.readerss.R;
@@ -17,22 +16,25 @@ import com.diegorayo.readerss.entitys.RSSChannel;
 
 /**
  * @author Diego Rayo
- * @version 1 <br />
- *          Description
+ * @version 2 <br />
+ *          Adaptador para generar un listview con la lista de rsschannels de
+ *          una actividad
  */
-public class MyAdapterListRSSChannel extends ArrayAdapter<RSSChannel> {
+public class MyAdapterListRSSChannels extends ArrayAdapter<RSSChannel> {
 
 	/**
-	 * 
+	 * Se utiliza para generar una fila del list view con contenido
+	 * personalizado. El contenido es llamado de un archivo xml
 	 */
-	LayoutInflater layoutInflater;
+	private LayoutInflater layoutInflater;
 
 	/**
-	 * 
+	 * Se utiliza para obtener cada rsschannel de la lista, y mostrarlo en el
+	 * listview
 	 */
-	List<RSSChannel> listRSSChannels;
+	private List<RSSChannel> listRSSChannels;
 
-	public MyAdapterListRSSChannel(Context context, int resource,
+	public MyAdapterListRSSChannels(Context context, int resource,
 			int textViewResourceId, List<RSSChannel> listRSSChannels) {
 
 		super(context, resource, textViewResourceId, listRSSChannels);
@@ -48,6 +50,7 @@ public class MyAdapterListRSSChannel extends ArrayAdapter<RSSChannel> {
 		RSSChannel rssChannel = (RSSChannel) listRSSChannels.get(position);
 
 		if (row == null) {
+
 			row = layoutInflater.inflate(R.layout.row_list_view_rss_channel,
 					null);
 		}
@@ -56,8 +59,8 @@ public class MyAdapterListRSSChannel extends ArrayAdapter<RSSChannel> {
 				.findViewById(R.id.txt_list_rss_channel_name);
 		txt.setText(rssChannel.getName());
 
-		// txt = (TextView) row.findViewById(R.id.txt_list_rss_channel_url);
-		// txt.setText(rssChannel.getUrl());
+		txt = (TextView) row.findViewById(R.id.txt_list_rss_channel_url);
+		txt.setText( rssChannel.getWebsite() + " ");
 
 		txt = (TextView) row.findViewById(R.id.txt_list_rss_channel_lastupdate);
 		txt.setText(ApplicationContext
@@ -65,8 +68,7 @@ public class MyAdapterListRSSChannel extends ArrayAdapter<RSSChannel> {
 				+ ": "
 				+ rssChannel.getLastUpdate() + " ");
 
-		RelativeLayout layoutParent = (RelativeLayout) txt.getParent();
-		layoutParent.setId(rssChannel.getId());
+		row.setId(rssChannel.getId());
 
 		return row;
 	}

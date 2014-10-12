@@ -11,17 +11,24 @@ import org.xml.sax.SAXException;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +54,7 @@ import com.diegorayo.readerss.util.UtilActivities;
 /**
  * @author Diego Rayo
  * @version 2 <br />
- *          Actividad que muestra la informacion y el contenido de un RSSChannel
+ *          Actividad para mostrar un rsschannel con sus links y su informacion
  */
 public class RSSChannelActivity extends Activity implements OnClickListener,
 		OnItemClickListener {
@@ -63,7 +70,12 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	private ArrayList<Category> categoryList;
 
 	/**
-	 * Es el RSSChannel perteneciente a la actividad
+	 * Lista de los RSSChannel de la categoria actual
+	 */
+	private List<RSSLink> rssLinksList;
+
+	/**
+	 * Categoria seleccionada por el usuario. Se utiliza en varios dialogs
 	 */
 	private RSSChannel currentRSSChannel;
 
@@ -73,8 +85,14 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	private Dialog dialog;
 
 	/**
-	 * Utilizada para ingresarle datos cuando se elimina o actualiza el
-	 * RSSChannel. Despues este intent es devuelto a la actividad anterior
+	 * Spinner que va a contener la lista de categorias. Es utilizado en varios
+	 * Dialogs
+	 */
+	private Spinner spinnerCategories;
+
+	/**
+	 * Utilizado para pasar parametros cuando el usuario se devuelva a la
+	 * actividad anterior
 	 */
 	private Intent intent;
 
@@ -85,35 +103,106 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	private boolean optionViewRSSLinksInBrowser;
 
 	/**
-	 * La Lista de RSSLinks del RSSchannel
+	 * Barra de rpogreso utilizada al crear un rsschannel
 	 */
-	private List<RSSLink> rssLinksList;
+	private ProgressDialog progressDialog;
 
 	/**
-	 * Spinner que va a contener la lista de categorias. Es utilizado en varios
-	 * Dialogs
+	 * Manejador de respuesta de un hilo. Esto se ejecuta cuando el hilo
+	 * termina, y ejecuta sentencias para manipular componentes de la interfaz
+	 * de usuario
 	 */
-	private Spinner spinnerCategories;
+	@SuppressLint("HandlerLeak")
+	private final Handler progressHandler = new Handler() {
+
+		public void handleMessage(Message msg) {
+
+			if (msg.obj != null) {
+
+				if (msg.obj instanceof String) {
+
+					UtilActivities.createErrorDialog(RSSChannelActivity.this,
+							(String) msg.obj);
+				} else {
+
+					try {
+
+						generateListViewRSSLinks();
+
+					} catch (NullEntityException | SAXException | IOException
+							| ParserConfigurationException
+							| DataBaseTransactionException e) {
+
+						e.printStackTrace();
+					}
+
+					updateInformationActivity();
+				}
+
+			}
+
+			progressDialog.dismiss();
+		}
+	};
 
 	/*
-	 * Metodo que se dispara cuando se pulsa el boton "atras", y se cierra esta
-	 * actividad (non-Javadoc)
+	 * Metodo que se dispara cuando se inicia la actividad (non-Javadoc)
 	 * 
-	 * @see android.app.Activity#onBackPressed()
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
-	public void onBackPressed() {
+	protected void onCreate(Bundle savedInstanceState) {
 
-		api.closeDatabaseConnection();
-		api = null;
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_rss_channel);
 
-		// Si se editó el RSSChannel, se mandan datos a la actividad anterior
-		if (intent.getIntExtra("category_parent_rss_channel_id", -1) != -1) {
+		UtilActivities.inflateHeaderApp(this);
 
-			setResult(RESULT_OK, intent);
+		Intent it = getIntent();
+		int idRSSChannel = it.getIntExtra("rss_channel_id", -1);
+
+		if (idRSSChannel != -1) {
+
+			api = new API();
+			currentRSSChannel = api.getRSSChannelById(idRSSChannel);
+
+			try {
+
+				categoryList = (ArrayList<Category>) api.getListAllCategories();
+				currentRSSChannel = api
+						.getListRSSLinksOfRSSChannel(currentRSSChannel);
+				rssLinksList = currentRSSChannel.getListRSSLinks();
+				optionViewRSSLinksInBrowser = api
+						.getConfigurationToViewRSSLinks();
+				intent = new Intent();
+				generateListViewRSSLinks();
+				updateInformationActivity();
+
+			} catch (NullEntityException | SAXException | IOException
+					| ParserConfigurationException
+					| DataBaseTransactionException e) {
+
+				UtilActivities.createErrorDialog(RSSChannelActivity.this,
+						e.toString());
+				e.printStackTrace();
+
+				// Vuelvo a la actividad anterior
+				it = new Intent(this, RSSChannelActivity.class);
+				it.putExtra("", -1);
+				startActivity(it);
+			}
+
+		} else {
+
+			// Vuelvo a la actividad anterior
+			it = new Intent(this, RSSChannelActivity.class);
+			it.putExtra("", -1);
+			startActivity(it);
 		}
 
-		super.onBackPressed();
 	}
 
 	/*
@@ -130,8 +219,6 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 
 			case R.id.btn_edit_rss_channel:
 
-				int oldIdCategory = currentRSSChannel.getCategory().getId();
-
 				EditText txtNameRSSChannel = (EditText) dialog
 						.findViewById(R.id.edt_name_rss_channel);
 
@@ -146,28 +233,17 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 						R.string.success_edit_rss_channel);
 				dialog.dismiss();
 
-				// Si se editó la categoria del RSSChannel
-				if (oldIdCategory != currentRSSChannel.getCategory().getId()) {
+				intent.putExtra("changes_rss_channel", true);
+				updateInformationActivity();
 
-					intent.putExtra("category_parent_rss_channel_id_old",
-							oldIdCategory);
-				}
-
-				intent.putExtra("category_parent_rss_channel_id",
-						currentRSSChannel.getCategory().getId());
 				break;
 
 			case R.id.btn_cancel:
 
 				dialog.dismiss();
 				break;
+
 			}
-
-		} catch (NullEntityException e) {
-
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.toString());
-			e.printStackTrace();
 
 		} catch (InvalidArgumentException e) {
 
@@ -176,6 +252,12 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 			e.printStackTrace();
 
 		} catch (DataBaseTransactionException e) {
+
+			UtilActivities.createErrorDialog(RSSChannelActivity.this,
+					e.toString());
+			e.printStackTrace();
+
+		} catch (NullEntityException e) {
 
 			UtilActivities.createErrorDialog(RSSChannelActivity.this,
 					e.toString());
@@ -190,6 +272,72 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	}
 
 	/*
+	 * Metodo que se utiliza cuando se selecciona un item de un menu que es
+	 * desplegado despues de presionar un item de un listview durante varios
+	 * segundos
+	 * 
+	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+
+		// Obtengo el item seleccionado
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+
+		switch (item.getItemId()) {
+
+		case R.id.item_menu_shared_link:
+
+			RSSLink rssLinkSelected = rssLinksList.get((int) info.id);
+
+			Intent sharingIntent = new Intent(
+					android.content.Intent.ACTION_SEND);
+			String shareBody = rssLinkSelected.getUrl();
+			String shareSubject = rssLinkSelected.getTitle();
+
+			sharingIntent.setType("text/plain");
+			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+					shareSubject);
+			sharingIntent
+					.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+
+			startActivity(Intent.createChooser(sharingIntent, getResources()
+					.getString(R.string.word_shared)));
+
+			return true;
+
+		default:
+
+			return super.onContextItemSelected(item);
+		}
+	}
+
+	/*
+	 * Este metodo se utiliza para crear un menu contextual que va a ser
+	 * desplegado cuando se selecciona un item de un listview durante varios
+	 * segundos (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu,
+	 * android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+
+		super.onCreateContextMenu(menu, v, menuInfo);
+
+		MenuInflater inflater = getMenuInflater();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+
+		ListView listView = (ListView) v;
+		menu.setHeaderTitle(listView.getAdapter().getItem(info.position)
+				.toString());
+
+		inflater.inflate(R.menu.menu_contextual_rss_channel_activity, menu);
+	}
+
+	/*
 	 * Metodo para crear el menu contextual de la actividad (non-Javadoc)
 	 * 
 	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu,
@@ -199,19 +347,18 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.activity_rss_channel, menu);
+		getMenuInflater().inflate(R.menu.menu_activity_rss_channel, menu);
 		return true;
 	}
 
 	/*
-	 * Metodo que se utiliza cuando se selecciona un RssLink. Sucede cuando se
-	 * seleccion un item de un listview (non-Javadoc)
+	 * Metodo que se utiliza cuando se selecciona un RssChannel. Sucede cuando
+	 * se seleccion un item de un listview (non-Javadoc)
 	 * 
 	 * @see
 	 * android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget
 	 * .AdapterView, android.view.View, int, long)
 	 */
-	@SuppressLint("ResourceAsColor")
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
 
@@ -222,10 +369,6 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			intent.setData(Uri.parse(rssLinksList.get(position).getUrl()));
 			startActivity(intent);
-
-		} else {
-
-			// Se lanza una actividad de la aplicacion
 		}
 	}
 
@@ -238,208 +381,148 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		try {
+		switch (item.getItemId()) {
 
-			switch (item.getItemId()) {
+		case R.id.btn_menu_edit_rss_channel:
 
-			case R.id.btn_update_rss_channel:
+			showDialogToEditRSSChannel();
+			break;
 
-				if (UtilAPI.getConnectivityStatus(this) == true) {
+		case R.id.btn_menu_update_rss_channel:
 
-					currentRSSChannel.setLastUpdate(UtilAPI
-							.getCurrentDateAndTime());
-					rssLinksList = api
-							.downloadXMLFileAndGetListRSSLinksOfRSSChannel(currentRSSChannel);
-					updateInformationActivity();
+			if (UtilAPI.getConnectivityStatus(this) == true) {
 
-					intent.putExtra("category_parent_rss_channel_id",
-							currentRSSChannel.getCategory().getId());
-				} else {
+				currentRSSChannel
+						.setLastUpdate(UtilAPI.getCurrentDateAndTime());
 
-					UtilActivities
-							.createErrorDialog(
-									this,
-									ApplicationContext
-											.getStringResource(R.string.error_no_internet_connection));
-				}
+				progressDialog = ProgressDialog.show(this, "",
+						ApplicationContext
+								.getStringResource(R.string.txt_load_data),
+						true, true);
 
-				break;
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
 
-			case R.id.btn_menu_edit_rss_channel:
-
-				showDialogToEditRSSChannel();
-				break;
-
-			case R.id.btn_menu_delete_rss_channel:
-
-				DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
+						Message msg = progressHandler.obtainMessage();
 
 						try {
 
-							api.deleteRSSChannel(currentRSSChannel.getId());
-
-							intent.putExtra("category_parent_rss_channel_id",
+							currentRSSChannel = api
+									.downloadXMLFileAndGetListRSSLinksOfRSSChannel(currentRSSChannel);
+							rssLinksList = currentRSSChannel.getListRSSLinks();
+							intent.putExtra("changes_rss_channel",
 									currentRSSChannel.getCategory().getId());
-
-							onBackPressed();
-
-						} catch (DataBaseTransactionException e) {
-
-							UtilActivities.createErrorDialog(
-									RSSChannelActivity.this, e.toString());
-							e.printStackTrace();
+							msg.obj = currentRSSChannel;
 
 						} catch (NullEntityException e) {
 
-							UtilActivities.createErrorDialog(
-									RSSChannelActivity.this, e.toString());
+							msg.obj = e.toString();
 							e.printStackTrace();
 
-						} catch (FileSystemException e) {
+						} catch (SAXException e) {
 
-							UtilActivities.createErrorDialog(
-									RSSChannelActivity.this, e.toString());
+							msg.obj = e.getMessage();
+							e.printStackTrace();
+
+						} catch (IOException e) {
+
+							msg.obj = e.getMessage();
+							e.printStackTrace();
+
+						} catch (ParserConfigurationException e) {
+
+							msg.obj = e.getMessage();
+							e.printStackTrace();
+
+						} catch (URLDownloadFileException e) {
+
+							msg.obj = e.toString();
+							e.printStackTrace();
+
+						} catch (InvalidArgumentException e) {
+
+							msg.obj = e.toString();
+							e.printStackTrace();
+
+						} catch (DataBaseTransactionException e) {
+
+							msg.obj = e.toString();
 							e.printStackTrace();
 						}
+
+						progressHandler.sendMessage(msg);
 					}
-				};
+				}).start();
 
-				UtilActivities.createConfirmDialog(this,
-						R.string.txt_qst_delete_rss_channel, onClickListener);
+			} else {
 
-				break;
-
-			case R.id.btn_submenu_view_in_app:
-
-				api.editConfigurationToViewRSSLinks(false);
-				optionViewRSSLinksInBrowser = api
-						.getConfigurationToViewRSSLinks();
-				break;
-
-			case R.id.btn_submenu_view_in_browser:
-
-				api.editConfigurationToViewRSSLinks(true);
-				optionViewRSSLinksInBrowser = api
-						.getConfigurationToViewRSSLinks();
-				break;
+				UtilActivities
+						.createErrorDialog(
+								this,
+								ApplicationContext
+										.getStringResource(R.string.error_no_internet_connection));
 			}
 
-		} catch (NullEntityException e) {
+			break;
 
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.toString());
-			e.printStackTrace();
-		} catch (SAXException e) {
+		case R.id.btn_menu_delete_rss_channel:
 
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
+			// Parametro que contiene la funcion OnClick para crear el
+			// dialogo de confirmacion
+			DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
 
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.getMessage());
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
+					try {
 
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.getMessage());
-			e.printStackTrace();
-		} catch (URLDownloadFileException e) {
+						api.deleteRSSChannel(currentRSSChannel.getId());
+						intent.putExtra("changes_rss_channel", true);
+						onBackPressed();
 
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.getMessage());
-			e.printStackTrace();
-		} catch (InvalidArgumentException e) {
+					} catch (DataBaseTransactionException e) {
 
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.toString());
-			e.printStackTrace();
-		} catch (DataBaseTransactionException e) {
+						UtilActivities.createErrorDialog(
+								RSSChannelActivity.this, e.toString());
+						e.printStackTrace();
 
-			UtilActivities.createErrorDialog(RSSChannelActivity.this,
-					e.toString());
-			e.printStackTrace();
+					} catch (NullEntityException e) {
+
+						UtilActivities.createErrorDialog(
+								RSSChannelActivity.this, e.toString());
+						e.printStackTrace();
+
+					} catch (FileSystemException e) {
+
+						UtilActivities.createErrorDialog(
+								RSSChannelActivity.this, e.toString());
+						e.printStackTrace();
+					}
+				}
+			};
+
+			// Creo el dialogo de confirmacion
+			UtilActivities.createConfirmDialog(this,
+					R.string.txt_qst_delete_rss_channel, onClickListener);
+
+			break;
+
 		}
 
 		return true;
 	}
 
-	/*
-	 * Metodo que se dispara cuando se inicia la actividad (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onBackPressed() {
 
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setContentView(R.layout.activity_rss_channel);
+		api.closeDatabaseConnection();
+		api = null;
 
-		Intent it = getIntent();
-		int idRSSChannel = it.getIntExtra("rss_channel_id", -1);
+		if (intent.getBooleanExtra("changes_rss_channel", false) != false) {
 
-		// Si mandaron el ID del RSSChannel de la actividad anterior
-		if (idRSSChannel != -1) {
-
-			api = new API(this);
-			intent = new Intent();
-
-			try {
-
-				currentRSSChannel = api.getRSSChannelById(idRSSChannel);
-				categoryList = (ArrayList<Category>) api.getListAllCategories();
-				rssLinksList = api.getListRSSLinksOfRSSChannel(
-						currentRSSChannel).getListRSSLinks();
-				optionViewRSSLinksInBrowser = api
-						.getConfigurationToViewRSSLinks();
-				currentRSSChannel.setDateLastRSSLink(rssLinksList.get(0)
-						.getDate());
-
-			} catch (NullEntityException e) {
-
-				UtilActivities.createErrorDialog(RSSChannelActivity.this,
-						e.toString());
-				e.printStackTrace();
-
-			} catch (SAXException e) {
-
-				UtilActivities.createErrorDialog(RSSChannelActivity.this,
-						e.getMessage());
-				e.printStackTrace();
-
-			} catch (IOException e) {
-
-				UtilActivities.createErrorDialog(RSSChannelActivity.this,
-						e.getMessage());
-				e.printStackTrace();
-
-			} catch (ParserConfigurationException e) {
-
-				UtilActivities.createErrorDialog(RSSChannelActivity.this,
-						e.getMessage());
-				e.printStackTrace();
-
-			} catch (DataBaseTransactionException e) {
-
-				UtilActivities.createErrorDialog(RSSChannelActivity.this,
-						e.toString());
-				e.printStackTrace();
-			}
-
-			updateInformationActivity();
-
-		} else {
-
-			// Se devuelve a la actividad anterior
-			Intent backToRSSChannelActivity = new Intent(this,
-					RSSChannelActivity.class);
-			backToRSSChannelActivity.putExtra("", -1);
-			startActivity(backToRSSChannelActivity);
+			setResult(RESULT_OK, intent);
 		}
+
+		super.onBackPressed();
 	}
 
 	/**
@@ -490,21 +573,50 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	}
 
 	/**
+	 * Metodo para generar la lista de rsschannels en la actividad
+	 * 
+	 * @throws DataBaseTransactionException
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 * @throws NullEntityException
+	 */
+	private void generateListViewRSSLinks() throws NullEntityException,
+			SAXException, IOException, ParserConfigurationException,
+			DataBaseTransactionException {
+
+		rssLinksList = currentRSSChannel.getListRSSLinks();
+
+		ListView listView = (ListView) this
+				.findViewById(R.id.list_view_list_rss_links);
+		listView.setAdapter(new MyAdapterListRSSLinks(this,
+				R.layout.row_list_view_rss_links, 0, rssLinksList));
+		listView.setScrollContainer(false);
+		listView.setOnItemClickListener(this);
+		registerForContextMenu(listView);
+
+	}
+
+	/**
 	 * Metodo para actualizar informacion en la actividad
 	 */
 	private void updateInformationActivity() {
 
-		// LLeno la lista de links rss
-		ListView listView = (ListView) findViewById(R.id.listLinksRSSChannel);
-		listView.setAdapter(null);
-		listView.setAdapter(new MyAdapterListRSSLinks(this,
-				R.layout.row_list_view_rss_links, 0, rssLinksList));
-		listView.setOnItemClickListener(this);
+		TextView txt = (TextView) findViewById(R.id.txt_name_rss_channel);
+		txt.setText(currentRSSChannel.getName() + " ");
 
-		// LLeno la informacion basica del RSSChannel
-		// TextView textView = (TextView) findViewById(R.id.txtLastUpdate);
-		// textView.setText("Last Update: " + currentRSSChannel.getLastUpdate()
-		// + " ");
+		txt = (TextView) findViewById(R.id.txt_url_rss_channel);
+		txt.setText("Website: " + currentRSSChannel.getWebsite() + " ");
+
+		txt = (TextView) findViewById(R.id.txt_category_rss_channel);
+		txt.setText("Category: " + currentRSSChannel.getCategory().getName()
+				+ " ");
+
+		txt = (TextView) findViewById(R.id.txt_last_update);
+		txt.setText("Last Update: " + currentRSSChannel.getLastUpdate() + " ");
+
+		txt = (TextView) findViewById(R.id.txt_posts_rss_channel);
+		txt.setText("Posts (" + rssLinksList.size() + ")");
 	}
 
 }

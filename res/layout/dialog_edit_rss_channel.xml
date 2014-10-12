@@ -21,14 +21,7 @@
         android:layout_marginBottom="15dp"
         android:hint="@string/hint_name"
         android:inputType="text"
-        android:maxLength="40" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/word_category"
-        android:textSize="@dimen/size_font_medium" />
+        android:maxLength="35" />
 
     <Spinner
         android:id="@+id/spnListCategories"

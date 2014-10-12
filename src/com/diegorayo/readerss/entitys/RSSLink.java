@@ -54,10 +54,11 @@ public class RSSLink {
 		this.title = title;
 		this.url = url;
 		this.date = date;
+		this.isNew = false;
 	}
 
 	public RSSLink() {
-
+		this.isNew = false;
 	}
 
 	public int getId() {
@@ -114,6 +115,12 @@ public class RSSLink {
 
 	public void setNew(boolean isNew) {
 		this.isNew = isNew;
+	}
+
+	@Override
+	public String toString() {
+
+		return title;
 	}
 
 }

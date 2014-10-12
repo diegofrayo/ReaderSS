@@ -1,41 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_marginBottom="1dp"
     android:background="@color/color_white"
     android:padding="5dp" >
 
     <ImageView
-        android:id="@+id/icon_rss_link"
-        android:layout_width="@dimen/size_image_link_rss"
-        android:layout_height="@dimen/size_image_link_rss"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:id="@+id/icon_rss_channel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+   		android:layout_centerVertical="true"
         android:layout_marginRight="5dp"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_rss_link" />
 
     <TextView
         android:id="@+id/txt_list_rss_link_title"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/icon_rss_link"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/icon_rss_channel"
         android:textColor="@color/color_text"
-        android:textSize="@dimen/size_font_large"
+        android:textSize="@dimen/size_font_medium"
         android:textStyle="bold" >
     </TextView>
 
     <TextView
         android:id="@+id/txt_list_rss_link_date"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_list_rss_link_title"
         android:layout_marginRight="5dp"
-        android:layout_alignParentRight="true"
-        android:textSize="@dimen/size_font_small"
-        android:textStyle="bold|italic" >
+        android:layout_toRightOf="@+id/icon_rss_channel"
+        android:gravity="right"
+        android:textSize="@dimen/size_font_extra_small"
+        android:textStyle="bold|italic"
+        android:textColor="#555555" >
     </TextView>
-
-
 
 </RelativeLayout>

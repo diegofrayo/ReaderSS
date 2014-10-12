@@ -43,8 +43,8 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 
-		db.execSQL("CREATE TABLE 'category' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL)");
-		db.execSQL("CREATE TABLE 'rss_channel' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL, 'url' TEXT NOT NULL UNIQUE, 'category' INTEGER NOT NULL REFERENCES 'category' ('id') ON DELETE CASCADE ON UPDATE CASCADE, 'last_update' DATE, 'date_last_rss_link' DATE)");
+		db.execSQL("CREATE TABLE 'category' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL UNIQUE)");
+		db.execSQL("CREATE TABLE 'rss_channel' ('id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 'name' TEXT NOT NULL UNIQUE, 'url' TEXT NOT NULL UNIQUE, 'category' INTEGER NOT NULL REFERENCES 'category' ('id') ON DELETE CASCADE ON UPDATE CASCADE, 'last_update' DATE, 'date_last_rss_link' DATE)");
 	}
 
 	/*
