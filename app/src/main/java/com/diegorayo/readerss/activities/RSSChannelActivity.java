@@ -1,13 +1,5 @@
 package com.diegorayo.readerss.activities;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -50,6 +42,14 @@ import com.diegorayo.readerss.exceptions.NullEntityException;
 import com.diegorayo.readerss.exceptions.URLDownloadFileException;
 import com.diegorayo.readerss.util.UtilAPI;
 import com.diegorayo.readerss.util.UtilActivities;
+
+import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * @author Diego Rayo
@@ -162,12 +162,13 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 		UtilActivities.inflateHeaderApp(this);
 
 		Intent it = getIntent();
-		int idRSSChannel = it.getIntExtra("rss_channel_id", -1);
+		//int idRSSChannel = it.getIntExtra("rss_channel_id", -1);
+        currentRSSChannel = it.getParcelableExtra("rss_channel");
 
-		if (idRSSChannel != -1) {
+		if (currentRSSChannel!=null) {
 
 			api = new API();
-			currentRSSChannel = api.getRSSChannelById(idRSSChannel);
+//			currentRSSChannel = api.getRSSChannelById(idRSSChannel);
 
 			try {
 

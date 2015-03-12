@@ -1,7 +1,5 @@
 package com.diegorayo.readerss.activities;
 
-import java.util.ArrayList;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -39,6 +37,8 @@ import com.diegorayo.readerss.exceptions.InvalidArgumentException;
 import com.diegorayo.readerss.exceptions.NullEntityException;
 import com.diegorayo.readerss.util.UtilAPI;
 import com.diegorayo.readerss.util.UtilActivities;
+
+import java.util.ArrayList;
 
 /**
  * @author Diego Rayo
@@ -375,7 +375,8 @@ public class MainActivity extends Activity implements OnClickListener,
 		api = null;
 
 		Intent intent = new Intent(this, CategoryActivity.class);
-		intent.putExtra("category_id", v.getId());
+//		intent.putExtra("category_id", v.getId());
+        intent.putExtra("category", categoryList.get(v.getId() - 1));
 
 		// Significa que inicia una nueva actividad, y cuando esta se acaba,
 		// vuelve a la actual
