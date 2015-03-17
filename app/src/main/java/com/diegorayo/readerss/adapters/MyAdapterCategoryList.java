@@ -1,7 +1,5 @@
 package com.diegorayo.readerss.adapters;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,12 +12,14 @@ import com.diegorayo.readerss.R;
 import com.diegorayo.readerss.api.API;
 import com.diegorayo.readerss.entitys.Category;
 
+import java.util.List;
+
 /**
  * @author Diego Rayo
  * @version 2 <br />
  *          Adapatdor para generar un listview con la lista de categorias
  */
-public class MyAdapterListCategories extends ArrayAdapter<Category> {
+public class MyAdapterCategoryList extends ArrayAdapter<Category> {
 
 	/**
 	 * Se utiliza para generar una fila del list view con contenido
@@ -31,16 +31,16 @@ public class MyAdapterListCategories extends ArrayAdapter<Category> {
 	 * Se utiliza para obtener cada categoria de la lista, y mostrarla en el
 	 * listview
 	 */
-	private List<Category> listCategories;
+	private List<Category> categoryList;
 
 	private API api;
 
-	public MyAdapterListCategories(Context context, int resource,
-			int textViewResourceId, List<Category> listCategories, API api) {
+	public MyAdapterCategoryList(Context context, int resource,
+                                 int textViewResourceId, List<Category> categoryList, API api) {
 
-		super(context, resource, textViewResourceId, listCategories);
+		super(context, resource, textViewResourceId, categoryList);
 		this.layoutInflater = LayoutInflater.from(context);
-		this.listCategories = listCategories;
+		this.categoryList = categoryList;
 		this.api = api;
 	}
 
@@ -48,8 +48,7 @@ public class MyAdapterListCategories extends ArrayAdapter<Category> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		View row = convertView;
-
-		Category category = (Category) listCategories.get(position);
+		Category category = categoryList.get(position);
 
 		if (row == null) {
 
@@ -63,7 +62,7 @@ public class MyAdapterListCategories extends ArrayAdapter<Category> {
 
 		txt = (TextView) row
 				.findViewById(R.id.txt_list_categories_number_rss_channels);
-		txt.setText("(" + api.getNumberRSSChannelsInACategory(category.getId())
+		txt.setText("(" + api.countRSSChannelsInCategory(category.getId())
 				+ ")");
 
 		row.setId(category.getId());

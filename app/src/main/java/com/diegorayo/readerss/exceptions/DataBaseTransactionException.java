@@ -28,7 +28,7 @@ public class DataBaseTransactionException extends Exception {
 	/**
 	 * 
 	 * @param operationFailedName
-	 *            - Nombre de la operacion que falló
+	 *            - Nombre de la operacion que fallÃ³
 	 * @param nameEntity
 	 *            - Nombre de la entidad relacionada con el fallo
 	 */

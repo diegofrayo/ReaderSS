@@ -25,7 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.diegorayo.readerss.R;
-import com.diegorayo.readerss.adapters.MyAdapterListRSSChannels;
+import com.diegorayo.readerss.adapters.MyAdapterRSSChannelList;
 import com.diegorayo.readerss.api.API;
 import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.Category;
@@ -89,16 +89,12 @@ public class CategoryActivity extends Activity implements OnClickListener,
         UtilActivities.inflateHeaderApp(this);
 
         Intent it = getIntent();
-//		int idCategory = it.getIntExtra("category_id", -1);
         currentCategory = it.getParcelableExtra("category");
-
-//		if (idCategory != -1) {
 
         if (currentCategory != null) {
 
             api = new API();
-//			currentCategory = api.getCategoryById(idCategory);
-            rssChannelList = api.getListRSSChannelsInACategory(currentCategory.getId());
+            rssChannelList = api.getListRSSChannelsOfACategory(currentCategory.getId());
             intent = new Intent();
             generateListViewRSSChannels();
             updateInformationActivity();
@@ -109,7 +105,6 @@ public class CategoryActivity extends Activity implements OnClickListener,
             it.putExtra("", -1);
             startActivity(it);
         }
-
     }
 
     /*
@@ -131,7 +126,7 @@ public class CategoryActivity extends Activity implements OnClickListener,
                     String textNameCategory = editTextNameCategory.getText()
                             .toString();
 
-                    // Si realmente SI se modific� el nombre de la categoria
+                    // Si realmente SI se modifico el nombre de la categoria
                     if (textNameCategory.equals(currentCategory.getName()) == false) {
 
                         currentCategory = api.editCategory(currentCategory.getId(),
@@ -159,19 +154,16 @@ public class CategoryActivity extends Activity implements OnClickListener,
             UtilActivities.createErrorDialog(CategoryActivity.this,
                     e.toString());
             e.printStackTrace();
-
         } catch (DataBaseTransactionException e) {
 
             UtilActivities.createErrorDialog(CategoryActivity.this,
                     e.toString());
             e.printStackTrace();
-
         } catch (NullEntityException e) {
 
             UtilActivities.createErrorDialog(CategoryActivity.this,
                     e.toString());
             e.printStackTrace();
-
         } catch (FileSystemException e) {
 
             UtilActivities.createErrorDialog(CategoryActivity.this,
@@ -188,7 +180,6 @@ public class CategoryActivity extends Activity implements OnClickListener,
      * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
      */
     @SuppressWarnings("deprecation")
-    //@TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
@@ -289,6 +280,7 @@ public class CategoryActivity extends Activity implements OnClickListener,
 
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_activity_category, menu);
+
         return true;
     }
 
@@ -308,7 +300,6 @@ public class CategoryActivity extends Activity implements OnClickListener,
 
         Intent intentRSSChannelActivity = new Intent(this,
                 RSSChannelActivity.class);
-//        intentRSSChannelActivity.putExtra("rss_channel_id", v.getId());
         intentRSSChannelActivity.putExtra("rss_channel", rssChannelList.get(v.getId()-1));
 
         // Significa que inicia una nueva actividad, y cuando esta se acaba,
@@ -350,13 +341,11 @@ public class CategoryActivity extends Activity implements OnClickListener,
                             UtilActivities.createErrorDialog(CategoryActivity.this,
                                     e.toString());
                             e.printStackTrace();
-
                         } catch (NullEntityException e) {
 
                             UtilActivities.createErrorDialog(CategoryActivity.this,
                                     e.toString());
                             e.printStackTrace();
-
                         } catch (FileSystemException e) {
 
                             UtilActivities.createErrorDialog(CategoryActivity.this,
@@ -451,12 +440,12 @@ public class CategoryActivity extends Activity implements OnClickListener,
      */
     private void generateListViewRSSChannels() {
 
-        rssChannelList = api.getListRSSChannelsInACategory(currentCategory
+        rssChannelList = api.getListRSSChannelsOfACategory(currentCategory
                 .getId());
 
         ListView listView = (ListView) this
                 .findViewById(R.id.list_view_list_rss_channels);
-        listView.setAdapter(new MyAdapterListRSSChannels(this,
+        listView.setAdapter(new MyAdapterRSSChannelList(this,
                 R.layout.row_list_view_rss_channel, 0, rssChannelList));
         listView.setScrollContainer(false);
         listView.setOnItemClickListener(this);

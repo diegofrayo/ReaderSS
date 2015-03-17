@@ -60,9 +60,9 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 		CategorySQLite categorySQLite = new CategorySQLite(db);
 		RSSChannelSQLite rssChannelSQLite = new RSSChannelSQLite(db);
 
-		List<Category> categoryList = categorySQLite.getListAllCategories();
+		List<Category> categoryList = categorySQLite.getAll();
 		List<RSSChannel> rssChannelList = rssChannelSQLite
-				.getListAllRSSChannels();
+				.getAll();
 
 		db.execSQL("DROP TABLE IF EXISTS 'category' ;");
 		db.execSQL("DROP TABLE IF EXISTS 'rss_channel' ;");
@@ -73,12 +73,12 @@ public class DatabaseConnection extends SQLiteOpenHelper {
 
 			for (Category category : categoryList) {
 
-				categorySQLite.create(category);
+				categorySQLite.insert(category);
 			}
 
 			for (RSSChannel rssChannel : rssChannelList) {
 
-				rssChannelSQLite.create(rssChannel);
+				rssChannelSQLite.insert(rssChannel);
 			}
 
 		} catch (NullEntityException e) {

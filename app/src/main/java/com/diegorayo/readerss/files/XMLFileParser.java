@@ -1,12 +1,8 @@
 package com.diegorayo.readerss.files;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.LinkedList;
+import android.annotation.SuppressLint;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import com.diegorayo.readerss.entitys.RSSLink;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,14 +11,18 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import android.annotation.SuppressLint;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.LinkedList;
 
-import com.diegorayo.readerss.entitys.RSSLink;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * @author Diego Rayo
  * @version 1 <br />
- *          Description
+ *          Clase utilizada para leer un archivo XML
  */
 public class XMLFileParser {
 
@@ -68,28 +68,29 @@ public class XMLFileParser {
 					if (propertyName.equalsIgnoreCase("title")) {
 
 						String text = this.getTextNode(propertyRead);
-						// text = text.replaceAll("&#xE1;", "á")
-						// .replaceAll("&#xE9;", "é")
-						// .replaceAll("&#xED;", "í")
-						// .replaceAll("&#xF3;", "ó")
-						// .replaceAll("&#xFA;", "ú")
-						// .replaceAll("&#xC1;", "Á")
-						// .replaceAll("&#xC9;", "É")
-						// .replaceAll("&#xCD;", "Í")
-						// .replaceAll("&#xD3;", "Ó")
-						// .replaceAll("&#xDA;", "Ú")
+						// text = text.replaceAll("&#xE1;", "Ã¡")
+						// .replaceAll("&#xE9;", "Ã©")
+						// .replaceAll("&#xED;", "Ã­")
+						// .replaceAll("&#xF3;", "Ã³")
+						// .replaceAll("&#xFA;", "Ãº")
+						// .replaceAll("&#xC1;", "Ã")
+						// .replaceAll("&#xC9;", "Ã‰")
+						// .replaceAll("&#xCD;", "Ã")
+						// .replaceAll("&#xD3;", "Ã“")
+						// .replaceAll("&#xDA;", "Ãš")
 						// .replaceAll("&#xA0;", "#")
-						// .replaceAll("&#xBF;", "¿")
+						// .replaceAll("&#xBF;", "Â¿")
 						// .replaceAll("&#x22;", "\"")
 						// .replaceAll("&#x201C;", "\"")
 						// .replaceAll("&#x201D;", "\"")
-						// .replaceAll("&#xF1;", "ñ")
-						// .replaceAll("&#xA1;", "¡")
+						// .replaceAll("&#xF1;", "Ã±")
+						// .replaceAll("&#xA1;", "Â¡")
 						// .replaceAll("&#x26;", "&")
 						// .replaceAll("&#x3E;", ">")
 						// .replaceAll("&#x27;", "'")
 						// .replaceAll("&#x2026;", "...");
 						rssLink.setTitle(text);
+
 					} else if (propertyName.equalsIgnoreCase("link")) {
 
 						rssLink.setUrl(propertyRead.getFirstChild()
@@ -103,10 +104,6 @@ public class XMLFileParser {
 						rssLink.setDate(propertyRead.getFirstChild()
 								.getNodeValue().substring(0, 10));
 					}
-
-					// else if (propertyName.equalsIgnoreCase("description")) {
-					// rssLink.setDescription(this.getTextNode(propertyRead));
-					// }
 				}
 
 				listRSSLinks.add(rssLink);
@@ -117,7 +114,7 @@ public class XMLFileParser {
 	}
 
 	/**
-	 * 
+	 * Metodo para obtener el titulo de un RSSLink
 	 * @param node
 	 * @return
 	 */
@@ -127,21 +124,20 @@ public class XMLFileParser {
 		NodeList fragments = node.getChildNodes();
 
 		for (int k = 0; k < fragments.getLength(); k++) {
+
 			text.append(fragments.item(k).getNodeValue());
 		}
 
-		String string = text.toString();
-		return string;
+		return text.toString();
 	}
 
-	/**
-	 * Este metodo sirve para saber si el documento descargado al RSSChannel, es
-	 * realmente un archivo XML valido
-	 * 
-	 * @param rssChannel
-	 * @return
-	 * @throws Exception
-	 */
+    /**
+     * Este metodo sirve para saber si el documento descargado al RSSChannel, es
+     * realmente un archivo XML valido
+     * @param absolutePathFile
+     * @return
+     * @throws Exception
+     */
 	public static boolean documentIsXMLFile(String absolutePathFile)
 			throws Exception {
 

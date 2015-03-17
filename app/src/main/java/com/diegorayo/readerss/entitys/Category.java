@@ -11,31 +11,19 @@ import java.util.List;
  */
 public class Category implements Parcelable {
 
-    /**
-     *
-     */
     private int id;
 
-    /**
-     *
-     */
     private String name;
 
-    /**
-     *
-     */
-    private List<RSSChannel> listRSSChannels;
-
-    /**
-     * @param name
-     */
-    public Category(String name) {
-
-        this.name = name;
-    }
+    private List<RSSChannel> rssChannelsList;
 
     public Category() {
 
+    }
+
+    public Category(String name) {
+
+        this.name = name;
     }
 
     public Category(Parcel in) {
@@ -67,6 +55,7 @@ public class Category implements Parcelable {
 
     @Override
     public int describeContents() {
+
         return 0;
     }
 
@@ -82,7 +71,6 @@ public class Category implements Parcelable {
 
         dest.writeInt(id);
         dest.writeString(name);
-//        dest.writeTypedList(listRSSChannels);
     }
 
     /**
@@ -95,7 +83,6 @@ public class Category implements Parcelable {
 
         id = in.readInt();
         name = in.readString();
-//        in.readTypedList(listRSSChannels, CREATOR);
     }
 
     public static final Parcelable.Creator<Category> CREATOR = new
@@ -108,6 +95,5 @@ public class Category implements Parcelable {
                     return new Category[size];
                 }
             };
-
 
 }

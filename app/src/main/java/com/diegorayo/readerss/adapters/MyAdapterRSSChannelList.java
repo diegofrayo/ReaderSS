@@ -1,7 +1,5 @@
 package com.diegorayo.readerss.adapters;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,13 +12,15 @@ import com.diegorayo.readerss.R;
 import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.RSSChannel;
 
+import java.util.List;
+
 /**
  * @author Diego Rayo
  * @version 2 <br />
  *          Adaptador para generar un listview con la lista de rsschannels de
  *          una actividad
  */
-public class MyAdapterListRSSChannels extends ArrayAdapter<RSSChannel> {
+public class MyAdapterRSSChannelList extends ArrayAdapter<RSSChannel> {
 
 	/**
 	 * Se utiliza para generar una fila del list view con contenido
@@ -34,8 +34,8 @@ public class MyAdapterListRSSChannels extends ArrayAdapter<RSSChannel> {
 	 */
 	private List<RSSChannel> listRSSChannels;
 
-	public MyAdapterListRSSChannels(Context context, int resource,
-			int textViewResourceId, List<RSSChannel> listRSSChannels) {
+	public MyAdapterRSSChannelList(Context context, int resource,
+                                   int textViewResourceId, List<RSSChannel> listRSSChannels) {
 
 		super(context, resource, textViewResourceId, listRSSChannels);
 		this.layoutInflater = LayoutInflater.from(context);
@@ -46,8 +46,7 @@ public class MyAdapterListRSSChannels extends ArrayAdapter<RSSChannel> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		View row = convertView;
-
-		RSSChannel rssChannel = (RSSChannel) listRSSChannels.get(position);
+		RSSChannel rssChannel = listRSSChannels.get(position);
 
 		if (row == null) {
 

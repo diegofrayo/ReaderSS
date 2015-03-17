@@ -1,15 +1,15 @@
 package com.diegorayo.readerss.sqlite;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.diegorayo.readerss.entitys.Category;
 import com.diegorayo.readerss.exceptions.DataBaseTransactionException;
 import com.diegorayo.readerss.exceptions.NullEntityException;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Diego Rayo
@@ -34,7 +34,7 @@ public class CategorySQLite {
 		this.db = db;
 	}
 
-	public Category create(Category category) throws NullEntityException,
+	public Category insert(Category category) throws NullEntityException,
 			DataBaseTransactionException {
 
 		ContentValues values = new ContentValues();
@@ -72,7 +72,7 @@ public class CategorySQLite {
 				Category.class.getSimpleName());
 	}
 
-	public boolean deleteCategory(int idCategory)
+	public boolean delete(int idCategory)
 			throws DataBaseTransactionException {
 
 		String whereArgs[] = new String[] { idCategory + "" };
@@ -89,7 +89,7 @@ public class CategorySQLite {
 				Category.class.getSimpleName());
 	}
 
-	public Category getCategoryById(int idCategory) {
+	public Category getById(int idCategory) {
 
 		String[] columns = new String[] { "id", "name" };
 		String[] whereArgs = new String[] { idCategory + "" };
@@ -109,7 +109,7 @@ public class CategorySQLite {
 		return null;
 	}
 
-	public List<Category> getListAllCategories() {
+	public List<Category> getAll() {
 
 		List<Category> categoryList = new ArrayList<Category>();
 		String[] columns = new String[] { "id", "name" };

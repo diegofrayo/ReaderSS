@@ -11,45 +11,24 @@ import java.util.List;
  */
 public class RSSChannel implements Parcelable {
 
-    /**
-     *
-     */
     private int id;
 
-    /**
-     *
-     */
     private String url;
 
-    /**
-     *
-     */
     private String name;
 
-    /**
-     *
-     */
-    private List<RSSLink> listRSSLinks;
+    private List<RSSLink> rssLinksList;
 
-    /**
-     *
-     */
     private Category category;
 
-    /**
-     * Fecha y hora de la ultima vez que fue actualizado el canal por el usuario
-     */
     private String lastUpdate;
 
-    /**
-     * Es la fecha del RSSLink mas reciente del canal
-     */
     private String dateLastRSSLink;
 
-    /**
-     * @param url
-     * @param name
-     */
+    public RSSChannel() {
+
+    }
+
     public RSSChannel(String url, String name) {
 
         this.url = url;
@@ -61,9 +40,6 @@ public class RSSChannel implements Parcelable {
         readFromParcel(in);
     }
 
-    public RSSChannel() {
-
-    }
 
     public int getId() {
         return id;
@@ -89,12 +65,12 @@ public class RSSChannel implements Parcelable {
         this.name = name;
     }
 
-    public List<RSSLink> getListRSSLinks() {
-        return listRSSLinks;
+    public List<RSSLink> getRSSLinksList() {
+        return rssLinksList;
     }
 
-    public void setListRSSLinks(List<RSSLink> listRSSLinks) {
-        this.listRSSLinks = listRSSLinks;
+    public void setRSSLinksList(List<RSSLink> rssLinksList) {
+        this.rssLinksList = rssLinksList;
     }
 
     public Category getCategory() {
@@ -177,7 +153,7 @@ public class RSSChannel implements Parcelable {
         dateLastRSSLink = in.readString();
     }
 
-        public static final Parcelable.Creator<RSSChannel> CREATOR = new
+    public static final Parcelable.Creator<RSSChannel> CREATOR = new
             Parcelable.Creator<RSSChannel>() {
                 public RSSChannel createFromParcel(Parcel in) {
                     return new RSSChannel(in);

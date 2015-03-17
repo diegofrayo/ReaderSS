@@ -27,7 +27,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.diegorayo.readerss.R;
-import com.diegorayo.readerss.adapters.MyAdapterListCategories;
+import com.diegorayo.readerss.adapters.MyAdapterCategoryList;
 import com.diegorayo.readerss.api.API;
 import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.Category;
@@ -46,488 +46,471 @@ import java.util.ArrayList;
  *          Actividad principal (Home)
  */
 public class MainActivity extends Activity implements OnClickListener,
-		OnItemClickListener {
+        OnItemClickListener {
 
-	/**
-	 * Clase que provee todos los metodos y funcionalidades de la aplicacion
-	 */
-	private API api;
+    /**
+     * Clase que provee todos los metodos y funcionalidades de la aplicacion
+     */
+    private API api;
 
-	/**
-	 * Lista de categorias del usuario
-	 */
-	private ArrayList<Category> categoryList;
-
-	/**
-	 * Utilizado para los metodos en donde se tienen que mostrar Dialogs
-	 */
-	private Dialog dialog;
+    /**
+     * Lista de categorias del usuario
+     */
+    private ArrayList<Category> categoryList;
 
-	/**
-	 * Spinner que va a contener la lista de categorias. Es utilizado en varios
-	 * Dialogs
-	 */
-	private Spinner spinnerCategories;
+    /**
+     * Utilizado para los metodos en donde se tienen que mostrar Dialogs
+     */
+    private Dialog dialog;
 
-	/**
-	 * Barra de rpogreso utilizada al crear un rsschannel
-	 */
-	private ProgressDialog progressDialog;
+    /**
+     * Spinner que va a contener la lista de categorias. Es utilizado en varios
+     * Dialogs
+     */
+    private Spinner spinnerCategories;
 
-	/**
-	 * Manejador de respuesta de un hilo. Esto se ejecuta cuando el hilo
-	 * termina, y ejecuta sentencias para manipular componentes de la interfaz
-	 * de usuario
-	 */
-	@SuppressLint("HandlerLeak")
-	private final Handler progressHandler = new Handler() {
+    /**
+     * Barra de rpogreso utilizada al crear un rsschannel
+     */
+    private ProgressDialog progressDialog;
 
-		public void handleMessage(Message msg) {
+    /**
+     * Manejador de respuesta de un hilo. Esto se ejecuta cuando el hilo
+     * termina, y ejecuta sentencias para manipular componentes de la interfaz
+     * de usuario
+     */
+    @SuppressLint("HandlerLeak")
+    private final Handler progressHandler = new Handler() {
 
-			if (msg.obj != null) {
+        public void handleMessage(Message msg) {
 
-				if (msg.obj instanceof String) {
+            if (msg.obj != null) {
 
-					UtilActivities.createErrorDialog(MainActivity.this,
-							(String) msg.obj);
-				} else {
+                if (msg.obj instanceof String) {
 
-					UtilActivities.createSuccessDialog(MainActivity.this,
-							R.string.success_new_rss_channel);
-					dialog.dismiss();
-					generateListViewCategories();
-				}
+                    UtilActivities.createErrorDialog(MainActivity.this,
+                            (String) msg.obj);
+                } else {
 
-			}
+                    UtilActivities.createSuccessDialog(MainActivity.this,
+                            R.string.success_new_rss_channel);
+                    dialog.dismiss();
+                    generateListViewCategories();
+                }
 
-			progressDialog.dismiss();
-		}
-	};
+            }
 
-	/*
-	 * Metodo que se dispara cuando se inicia la actividad (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+            progressDialog.dismiss();
+        }
+    };
 
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		setContentView(R.layout.activity_main);
+    /*
+     * Metodo que se dispara cuando se inicia la actividad (non-Javadoc)
+     *
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-		UtilActivities.inflateHeaderApp(this);
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_main);
 
-		api = new API();
+        UtilActivities.inflateHeaderApp(this);
 
-		try {
+        api = new API();
 
-			// Solo se debe ejecutar la primera vez que se ejecuta la aplicacion
-			api.configureApp();
+        try {
 
-		} catch (NullEntityException e) {
+            // Solo se debe ejecutar la primera vez que se ejecuta la aplicacion
+            api.configureApp();
 
-			e.printStackTrace();
-		} catch (DataBaseTransactionException e) {
+        } catch (NullEntityException e) {
 
-			e.printStackTrace();
-		} catch (InvalidArgumentException e) {
+            e.printStackTrace();
+        } catch (DataBaseTransactionException e) {
 
-			e.printStackTrace();
-		} catch (FileSystemException e) {
+            e.printStackTrace();
+        } catch (InvalidArgumentException e) {
 
-			e.printStackTrace();
-		}
+            e.printStackTrace();
+        } catch (FileSystemException e) {
 
-		// Configuro el username
-		UtilActivities.updateUsername(this, api.getUsernameGoogle());
+            e.printStackTrace();
+        }
 
-		// Configuro y despliego las categorias
-		generateListViewCategories();
-	}
-	
-	
+        // Configuro el username
+        UtilActivities.updateUsername(this, api.getUsernameGoogle());
 
-	/*
-	 * Metodo cuando se preciona un boton (non-Javadoc)
-	 * 
-	 * @see android.view.View.OnClickListener#onClick(android.view.View)
-	 */
-	@Override
-	public void onClick(View v) {
+        // Configuro y despliego las categorias
+        generateListViewCategories();
+    }
 
-		try {
 
-			switch (v.getId()) {
+    /*
+     * Metodo cuando se preciona un boton (non-Javadoc)
+     *
+     * @see android.view.View.OnClickListener#onClick(android.view.View)
+     */
+    @Override
+    public void onClick(View v) {
 
-			case R.id.btn_create_new_rss_channel:
+        try {
 
-				progressDialog = ProgressDialog.show(this, "",
-						ApplicationContext
-								.getStringResource(R.string.txt_load_data),
-						true, true);
+            switch (v.getId()) {
 
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
+                case R.id.btn_create_new_rss_channel:
 
-						Message msg = progressHandler.obtainMessage();
+                    progressDialog = ProgressDialog.show(this, "",
+                            ApplicationContext
+                                    .getStringResource(R.string.txt_load_data),
+                            true, true);
 
-						EditText txtNameRSSChannel = (EditText) dialog
-								.findViewById(R.id.edt_name_rss_channel);
-						EditText txtURL_RSSChannel = (EditText) dialog
-								.findViewById(R.id.edt_url_rss_channel);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
 
-						Category categorySelect = (Category) spinnerCategories
-								.getSelectedItem();
+                            Message msg = progressHandler.obtainMessage();
 
-						try {
+                            EditText txtNameRSSChannel = (EditText) dialog
+                                    .findViewById(R.id.edt_name_rss_channel);
+                            EditText txtURL_RSSChannel = (EditText) dialog
+                                    .findViewById(R.id.edt_url_rss_channel);
 
-							Object rssChannel = api.createRSSChannel(
-									txtNameRSSChannel.getText().toString(),
-									txtURL_RSSChannel.getText().toString(),
-									categorySelect.getId());
+                            Category categorySelect = (Category) spinnerCategories
+                                    .getSelectedItem();
 
-							msg.obj = rssChannel;
+                            try {
 
-						} catch (InvalidArgumentException e) {
+                                Object rssChannel = api.createRSSChannel(
+                                        txtNameRSSChannel.getText().toString(),
+                                        txtURL_RSSChannel.getText().toString(),
+                                        categorySelect.getId());
 
-							e.printStackTrace();
-							msg.obj = e.toString();
+                                msg.obj = rssChannel;
 
-						} catch (DataBaseTransactionException e) {
+                            } catch (InvalidArgumentException e) {
 
-							e.printStackTrace();
-							msg.obj = e.toString();
+                                e.printStackTrace();
+                                msg.obj = e.toString();
+                            } catch (DataBaseTransactionException e) {
 
-						} catch (NullEntityException e) {
+                                e.printStackTrace();
+                                msg.obj = e.toString();
+                            } catch (NullEntityException e) {
 
-							e.printStackTrace();
-							msg.obj = e.toString();
+                                e.printStackTrace();
+                                msg.obj = e.toString();
+                            } catch (FileSystemException e) {
 
-						} catch (FileSystemException e) {
+                                e.printStackTrace();
+                                msg.obj = e.toString();
+                            }
 
-							e.printStackTrace();
-							msg.obj = e.toString();
-						}
+                            progressHandler.sendMessage(msg);
+                        }
+                    }).start();
 
-						progressHandler.sendMessage(msg);
-					}
-				}).start();
+                    break;
 
-				break;
+                case R.id.btn_create_new_category:
 
-			case R.id.btn_create_new_category:
+                    EditText editTextNameCategory = (EditText) dialog
+                            .findViewById(R.id.edt_name_category);
 
-				EditText editTextNameCategory = (EditText) dialog
-						.findViewById(R.id.edt_name_category);
+                    api.createCategory(editTextNameCategory.getText().toString());
 
-				api.createCategory(editTextNameCategory.getText().toString());
+                    UtilActivities.createSuccessDialog(this,
+                            R.string.success_new_category);
+                    dialog.dismiss();
 
-				UtilActivities.createSuccessDialog(this,
-						R.string.success_new_category);
-				dialog.dismiss();
+                    generateListViewCategories();
 
-				generateListViewCategories();
+                    break;
 
-				break;
+                case R.id.btn_cancel:
 
-			case R.id.btn_cancel:
+                    dialog.dismiss();
+                    break;
 
-				dialog.dismiss();
-				break;
+            }
 
-			}
+        } catch (InvalidArgumentException e) {
 
-		} catch (InvalidArgumentException e) {
+            UtilActivities.createErrorDialog(MainActivity.this, e.toString());
+            e.printStackTrace();
+        } catch (DataBaseTransactionException e) {
 
-			UtilActivities.createErrorDialog(MainActivity.this, e.toString());
-			e.printStackTrace();
+            UtilActivities.createErrorDialog(MainActivity.this, e.toString());
+            e.printStackTrace();
+        } catch (NullEntityException e) {
 
-		} catch (DataBaseTransactionException e) {
+            UtilActivities.createErrorDialog(MainActivity.this, e.toString());
+            e.printStackTrace();
+        } catch (FileSystemException e) {
 
-			UtilActivities.createErrorDialog(MainActivity.this, e.toString());
-			e.printStackTrace();
+            UtilActivities.createErrorDialog(MainActivity.this, e.toString());
+            e.printStackTrace();
+        }
+    }
 
-		} catch (NullEntityException e) {
+    /*
+     * Metodo que se utiliza cuando se selecciona un item de un menu que es
+     * desplegado despues de presionar un item de un listview durante varios
+     * segundos
+     *
+     * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+     */
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
 
-			UtilActivities.createErrorDialog(MainActivity.this, e.toString());
-			e.printStackTrace();
+        // Obtengo el item seleccionado
+        final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+                .getMenuInfo();
 
-		} catch (FileSystemException e) {
+        switch (item.getItemId()) {
 
-			UtilActivities.createErrorDialog(MainActivity.this, e.toString());
-			e.printStackTrace();
-		}
-	}
+            case R.id.btn_menu_delete_category:
 
-	/*
-	 * Metodo que se utiliza cuando se selecciona un item de un menu que es
-	 * desplegado despues de presionar un item de un listview durante varios
-	 * segundos
-	 * 
-	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
-	 */
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+                DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-		// Obtengo el item seleccionado
-		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
+                        try {
 
-		switch (item.getItemId()) {
+                            Category categorySelected = categoryList
+                                    .get((int) info.id);
 
-		case R.id.btn_menu_delete_category:
+                            api.deleteCategory(categorySelected.getId());
+                            generateListViewCategories();
 
-			DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
+                        } catch (DataBaseTransactionException e) {
 
-					try {
+                            UtilActivities.createErrorDialog(MainActivity.this,
+                                    e.toString());
+                            e.printStackTrace();
+                        } catch (NullEntityException e) {
 
-						Category categorySelected = categoryList
-								.get((int) info.id);
+                            UtilActivities.createErrorDialog(MainActivity.this,
+                                    e.toString());
+                            e.printStackTrace();
+                        } catch (FileSystemException e) {
 
-						api.deleteCategory(categorySelected.getId());
-						generateListViewCategories();
+                            UtilActivities.createErrorDialog(MainActivity.this,
+                                    e.toString());
+                            e.printStackTrace();
+                        }
+                    }
+                };
 
-					} catch (DataBaseTransactionException e) {
+                UtilActivities.createConfirmDialog(this,
+                        R.string.txt_qst_delete_category, onClickListener);
 
-						UtilActivities.createErrorDialog(MainActivity.this,
-								e.toString());
-						e.printStackTrace();
-					} catch (NullEntityException e) {
+                return true;
 
-						UtilActivities.createErrorDialog(MainActivity.this,
-								e.toString());
-						e.printStackTrace();
-					} catch (FileSystemException e) {
+            default:
 
-						UtilActivities.createErrorDialog(MainActivity.this,
-								e.toString());
-						e.printStackTrace();
-					}
-				}
-			};
+                return super.onContextItemSelected(item);
+        }
+    }
 
-			UtilActivities.createConfirmDialog(this,
-					R.string.txt_qst_delete_category, onClickListener);
+    /*
+     * Este metodo se utiliza para crear un menu contextual que va a ser
+     * desplegado cuando se selecciona un item de un listview durante varios
+     * segundos (non-Javadoc)
+     *
+     * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu,
+     * android.view.View, android.view.ContextMenu.ContextMenuInfo)
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenuInfo menuInfo) {
 
-			return true;
+        super.onCreateContextMenu(menu, v, menuInfo);
 
-		default:
+        MenuInflater inflater = getMenuInflater();
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 
-			return super.onContextItemSelected(item);
-		}
-	}
+        ListView listView = (ListView) v;
+        menu.setHeaderTitle(listView.getAdapter().getItem(info.position)
+                .toString());
 
-	/*
-	 * Este metodo se utiliza para crear un menu contextual que va a ser
-	 * desplegado cuando se selecciona un item de un listview durante varios
-	 * segundos (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu,
-	 * android.view.View, android.view.ContextMenu.ContextMenuInfo)
-	 */
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+        inflater.inflate(R.menu.menu_contextual_main_activity, menu);
+    }
 
-		super.onCreateContextMenu(menu, v, menuInfo);
+    /*
+     * Metodo para crear el menu contextual de la actividad (non-Javadoc)
+     *
+     * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu,
+     * android.view.View, android.view.ContextMenu.ContextMenuInfo)
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-		MenuInflater inflater = getMenuInflater();
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.menu_activity_main, menu);
+        return true;
+    }
 
-		ListView listView = (ListView) v;
-		menu.setHeaderTitle(listView.getAdapter().getItem(info.position)
-				.toString());
+    /*
+     * Metodo que se utiliza cuando se selecciona un RssChannel. Sucede cuando
+     * se seleccion un item de un listview (non-Javadoc)
+     *
+     * @see
+     * android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget
+     * .AdapterView, android.view.View, int, long)
+     */
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
 
-		inflater.inflate(R.menu.menu_contextual_main_activity, menu);
-	}
+        api.closeDatabaseConnection();
+        api = null;
 
-	/*
-	 * Metodo para crear el menu contextual de la actividad (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu,
-	 * android.view.View, android.view.ContextMenu.ContextMenuInfo)
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.menu_activity_main, menu);
-		return true;
-	}
-
-	/*
-	 * Metodo que se utiliza cuando se selecciona un RssChannel. Sucede cuando
-	 * se seleccion un item de un listview (non-Javadoc)
-	 * 
-	 * @see
-	 * android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget
-	 * .AdapterView, android.view.View, int, long)
-	 */
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View v, int arg2, long arg3) {
-
-		api.closeDatabaseConnection();
-		api = null;
-
-		Intent intent = new Intent(this, CategoryActivity.class);
-//		intent.putExtra("category_id", v.getId());
+        Intent intent = new Intent(this, CategoryActivity.class);
         intent.putExtra("category", categoryList.get(v.getId() - 1));
 
-		// Significa que inicia una nueva actividad, y cuando esta se acaba,
-		// vuelve a la actual
-		this.startActivityForResult(intent, 1);
-	}
+        // Significa que inicia una nueva actividad, y cuando esta se acaba,
+        // vuelve a la actual
+        this.startActivityForResult(intent, 1);
+    }
 
-	/*
-	 * Metodo que se utiliza cuando se selecciona algun item del menu contextual
-	 * de la actividad (non-Javadoc) (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
-	 */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+    /*
+     * Metodo que se utiliza cuando se selecciona algun item del menu contextual
+     * de la actividad (non-Javadoc) (non-Javadoc)
+     *
+     * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-		switch (item.getItemId()) {
+        switch (item.getItemId()) {
 
-		case R.id.btn_menu_add_category:
+            case R.id.btn_menu_add_category:
 
-			showDialogToCreateCategory();
-			break;
+                showDialogToCreateCategory();
+                break;
 
-		case R.id.btn_menu_add_rss_channel:
+            case R.id.btn_menu_add_rss_channel:
 
-			if (UtilAPI.getConnectivityStatus(this) == true
-					&& categoryList.size() > 0) {
+                if (UtilAPI.getConnectivityStatus(this) == true
+                        && categoryList.size() > 0) {
 
-				showDialogToCreateRSSChannel();
-			} else {
+                    showDialogToCreateRSSChannel();
+                } else {
 
-				UtilActivities
-						.createErrorDialog(
-								this,
-								ApplicationContext
-										.getStringResource(R.string.error_no_internet_connection));
-			}
+                    UtilActivities
+                            .createErrorDialog(
+                                    this,
+                                    ApplicationContext
+                                            .getStringResource(R.string.error_no_internet_connection));
+                }
 
-			break;
+                break;
 
-		// case R.id.btn_submenu_view_in_app:
-		//
-		// api.editConfigurationToViewRSSLinks(false);
-		// break;
-		//
-		// case R.id.btn_submenu_view_in_browser:
-		//
-		// api.editConfigurationToViewRSSLinks(true);
-		// break;
-		}
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/*
-	 * Metodo que se dispara, cuando despues de que el usuario estaba en otra
-	 * actividad, vuelve a esta (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onActivityResult(int, int,
-	 * android.content.Intent)
-	 */
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /*
+     * Metodo que se dispara, cuando despues de que el usuario estaba en otra
+     * actividad, vuelve a esta (non-Javadoc)
+     *
+     * @see android.app.Activity#onActivityResult(int, int,
+     * android.content.Intent)
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		api = new API();
+        api = new API();
 
-		// Si se mandaron parametros de otra actividad
-		if (requestCode == 1) {
+        // Si se mandaron parametros de otra actividad
+        if (requestCode == 1) {
 
-			if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK) {
 
-				generateListViewCategories();
-			}
-		}
-	}
+                generateListViewCategories();
+            }
+        }
+    }
 
-	/**
-	 * Metodo para generar la lista de categorias en la actividad
-	 */
-	private void generateListViewCategories() {
+    /**
+     * Metodo para generar la lista de categorias en la actividad
+     */
+    private void generateListViewCategories() {
 
-		categoryList = (ArrayList<Category>) api.getListAllCategories();
+        categoryList = (ArrayList<Category>) api.getListAllCategories();
 
-		ListView listView = (ListView) this
-				.findViewById(R.id.list_view_list_categories);
-		listView.setAdapter(new MyAdapterListCategories(this,
-				R.layout.row_list_view_categories, 0, categoryList, api));
-		listView.setScrollContainer(false);
-		listView.setOnItemClickListener(this);
-		registerForContextMenu(listView);
-	}
+        ListView listView = (ListView) this
+                .findViewById(R.id.list_view_list_categories);
+        listView.setAdapter(new MyAdapterCategoryList(this,
+                R.layout.row_list_view_categories, 0, categoryList, api));
+        listView.setScrollContainer(false);
+        listView.setOnItemClickListener(this);
+        registerForContextMenu(listView);
+    }
 
-	/**
-	 * Metodo que crea y configura un Dialog para crear una categoria
-	 */
-	private void showDialogToCreateCategory() {
+    /**
+     * Metodo que crea y configura un Dialog para crear una categoria
+     */
+    private void showDialogToCreateCategory() {
 
-		// Creo el dialog
-		dialog = new Dialog(this);
-		dialog.setContentView(R.layout.dialog_create_category);
+        // Creo el dialog
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_create_category);
 
-		// Configuro el boton de crear RSSChannel
-		Button btnCreate = (Button) dialog
-				.findViewById(R.id.btn_create_new_category);
-		btnCreate.setOnClickListener(this);
+        // Configuro el boton de crear RSSChannel
+        Button btnCreate = (Button) dialog
+                .findViewById(R.id.btn_create_new_category);
+        btnCreate.setOnClickListener(this);
 
-		// Configuro el boton de cancelar
-		Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
-		btnCancel.setOnClickListener(this);
+        // Configuro el boton de cancelar
+        Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(this);
 
-		// Configuro atributos visuales del Dialog
-		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-		lp.copyFrom(dialog.getWindow().getAttributes());
-		lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-		lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-		dialog.getWindow().setAttributes(lp);
+        // Configuro atributos visuales del Dialog
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setAttributes(lp);
 
-		dialog.show();
-	}
+        dialog.show();
+    }
 
-	/**
-	 * Metodo que crea y configura un Dialog para crear un RSSChannel
-	 */
-	private void showDialogToCreateRSSChannel() {
+    /**
+     * Metodo que crea y configura un Dialog para crear un RSSChannel
+     */
+    private void showDialogToCreateRSSChannel() {
 
-		// Creo el dialog
-		dialog = new Dialog(this);
-		dialog.setContentView(R.layout.dialog_create_rss_channel);
+        // Creo el dialog
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_create_rss_channel);
 
-		// Le asigno un spinner con el lista de las categorias
-		spinnerCategories = (Spinner) dialog
-				.findViewById(R.id.spnListCategories);
-		UtilActivities.insertCategoriesInSpinner(this, categoryList,
-				spinnerCategories);
+        // Le asigno un spinner con el lista de las categorias
+        spinnerCategories = (Spinner) dialog
+                .findViewById(R.id.spnListCategories);
+        UtilActivities.insertCategoriesInSpinner(this, categoryList,
+                spinnerCategories);
 
-		// Configuro el boton de crear RSSChannel
-		Button btnCreate = (Button) dialog
-				.findViewById(R.id.btn_create_new_rss_channel);
-		btnCreate.setOnClickListener(this);
+        // Configuro el boton de crear RSSChannel
+        Button btnCreate = (Button) dialog
+                .findViewById(R.id.btn_create_new_rss_channel);
+        btnCreate.setOnClickListener(this);
 
-		// Configuro el boton de cancelar
-		Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
-		btnCancel.setOnClickListener(this);
+        // Configuro el boton de cancelar
+        Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        btnCancel.setOnClickListener(this);
 
-		// Configuro atributos visuales del Dialog
-		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-		lp.copyFrom(dialog.getWindow().getAttributes());
-		lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-		lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-		dialog.getWindow().setAttributes(lp);
+        // Configuro atributos visuales del Dialog
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setAttributes(lp);
 
-		dialog.show();
-	}
+        dialog.show();
+    }
 
 }

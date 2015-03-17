@@ -7,34 +7,14 @@ package com.diegorayo.readerss.entitys;
  */
 public class RSSLink {
 
-	/**
-	 * 
-	 */
 	private int id;
 
-	/**
-	 * 
-	 */
 	private String title;
 
-	/**
-	 * 
-	 */
 	private String url;
 
-	/**
-	 * 
-	 */
 	private String date;
 
-	/**
-	 * 
-	 */
-	private String description;
-
-	/**
-	 * 
-	 */
 	private RSSChannel rssChannelParent;
 
 	/**
@@ -43,12 +23,6 @@ public class RSSLink {
 	 */
 	private boolean isNew;
 
-	/**
-	 * 
-	 * @param title
-	 * @param url
-	 * @param date
-	 */
 	public RSSLink(String title, String url, String date) {
 		super();
 		this.title = title;
@@ -91,22 +65,6 @@ public class RSSLink {
 
 	public void setDate(String date) {
 		this.date = date;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public RSSChannel getRSSChannelParent() {
-		return rssChannelParent;
-	}
-
-	public void setRSSChannelParent(RSSChannel rssChannelParent) {
-		this.rssChannelParent = rssChannelParent;
 	}
 
 	public boolean isNew() {

@@ -1,5 +1,15 @@
 package com.diegorayo.readerss.files;
 
+import com.diegorayo.readerss.R;
+import com.diegorayo.readerss.context.ApplicationContext;
+import com.diegorayo.readerss.entitys.Category;
+import com.diegorayo.readerss.entitys.RSSChannel;
+import com.diegorayo.readerss.entitys.RSSLink;
+import com.diegorayo.readerss.exceptions.NullEntityException;
+import com.diegorayo.readerss.exceptions.URLDownloadFileException;
+
+import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,20 +20,10 @@ import java.util.LinkedList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.SAXException;
-
-import com.diegorayo.readerss.R;
-import com.diegorayo.readerss.context.ApplicationContext;
-import com.diegorayo.readerss.entitys.Category;
-import com.diegorayo.readerss.entitys.RSSChannel;
-import com.diegorayo.readerss.entitys.RSSLink;
-import com.diegorayo.readerss.exceptions.NullEntityException;
-import com.diegorayo.readerss.exceptions.URLDownloadFileException;
-
 /**
  * @author Diego Rayo
  * @version 2 <br />
- *          Clase utilizadaa para gestionar archivos xml y carpetas.
+ *          Clase utilizada para gestionar archivos xml y carpetas.
  */
 public class FilesManagement {
 
@@ -63,7 +63,6 @@ public class FilesManagement {
 	public static boolean deleteFolder(String nameCategory) {
 
 		File pathFile = new File(createAbsolutePath(nameCategory, null));
-
 		File[] listFiles = pathFile.listFiles();
 
 		for (int i = 0; i < listFiles.length; i++) {
@@ -99,8 +98,6 @@ public class FilesManagement {
 				// set up some things on the connection
 				urlConnection.setRequestMethod("GET");
 				urlConnection.setDoOutput(true);
-
-				System.out.println("dddd");
 
 				// and connect!
 				urlConnection.connect();
@@ -214,7 +211,7 @@ public class FilesManagement {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 */
-	public static LinkedList<RSSLink> readFileXML(RSSChannel rssChannel)
+	public static LinkedList<RSSLink> readXMLFile(RSSChannel rssChannel)
 			throws SAXException, IOException, ParserConfigurationException,
 			NullEntityException {
 
@@ -275,4 +272,5 @@ public class FilesManagement {
 
 		return absolutePath;
 	}
+
 }

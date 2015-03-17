@@ -29,7 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.diegorayo.readerss.R;
-import com.diegorayo.readerss.adapters.MyAdapterListRSSLinks;
+import com.diegorayo.readerss.adapters.MyAdapterRSSLinkList;
 import com.diegorayo.readerss.api.API;
 import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.Category;
@@ -162,20 +162,18 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 		UtilActivities.inflateHeaderApp(this);
 
 		Intent it = getIntent();
-		//int idRSSChannel = it.getIntExtra("rss_channel_id", -1);
         currentRSSChannel = it.getParcelableExtra("rss_channel");
 
 		if (currentRSSChannel!=null) {
 
 			api = new API();
-//			currentRSSChannel = api.getRSSChannelById(idRSSChannel);
 
 			try {
 
 				categoryList = (ArrayList<Category>) api.getListAllCategories();
 				currentRSSChannel = api
 						.getListRSSLinksOfRSSChannel(currentRSSChannel);
-				rssLinksList = currentRSSChannel.getListRSSLinks();
+				rssLinksList = currentRSSChannel.getRSSLinksList();
 				optionViewRSSLinksInBrowser = api
 						.getConfigurationToViewRSSLinks();
 				intent = new Intent();
@@ -251,19 +249,16 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 			UtilActivities.createErrorDialog(RSSChannelActivity.this,
 					e.toString());
 			e.printStackTrace();
-
 		} catch (DataBaseTransactionException e) {
 
 			UtilActivities.createErrorDialog(RSSChannelActivity.this,
 					e.toString());
 			e.printStackTrace();
-
 		} catch (NullEntityException e) {
 
 			UtilActivities.createErrorDialog(RSSChannelActivity.this,
 					e.toString());
 			e.printStackTrace();
-
 		} catch (FileSystemException e) {
 
 			UtilActivities.createErrorDialog(RSSChannelActivity.this,
@@ -349,6 +344,7 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.menu_activity_rss_channel, menu);
+
 		return true;
 	}
 
@@ -411,7 +407,7 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 
 							currentRSSChannel = api
 									.downloadXMLFileAndGetListRSSLinksOfRSSChannel(currentRSSChannel);
-							rssLinksList = currentRSSChannel.getListRSSLinks();
+							rssLinksList = currentRSSChannel.getRSSLinksList();
 							intent.putExtra("changes_rss_channel",
 									currentRSSChannel.getCategory().getId());
 							msg.obj = currentRSSChannel;
@@ -420,22 +416,18 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 
 							msg.obj = e.toString();
 							e.printStackTrace();
-
 						} catch (SAXException e) {
 
 							msg.obj = e.getMessage();
 							e.printStackTrace();
-
 						} catch (IOException e) {
 
 							msg.obj = e.getMessage();
 							e.printStackTrace();
-
 						} catch (ParserConfigurationException e) {
 
 							msg.obj = e.getMessage();
 							e.printStackTrace();
-
 						} catch (URLDownloadFileException e) {
 
 							msg.obj = e.toString();
@@ -445,7 +437,6 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 
 							msg.obj = e.toString();
 							e.printStackTrace();
-
 						} catch (DataBaseTransactionException e) {
 
 							msg.obj = e.toString();
@@ -469,8 +460,9 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 
 		case R.id.btn_menu_delete_rss_channel:
 
-			// Parametro que contiene la funcion OnClick para crear el
-			// dialogo de confirmacion
+			/* Parametro que contiene la funcion OnClick para crear el
+			* dialogo de confirmacion
+			*/
 			DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 
@@ -586,16 +578,15 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 			SAXException, IOException, ParserConfigurationException,
 			DataBaseTransactionException {
 
-		rssLinksList = currentRSSChannel.getListRSSLinks();
+		rssLinksList = currentRSSChannel.getRSSLinksList();
 
 		ListView listView = (ListView) this
 				.findViewById(R.id.list_view_list_rss_links);
-		listView.setAdapter(new MyAdapterListRSSLinks(this,
+		listView.setAdapter(new MyAdapterRSSLinkList(this,
 				R.layout.row_list_view_rss_links, 0, rssLinksList));
 		listView.setScrollContainer(false);
 		listView.setOnItemClickListener(this);
 		registerForContextMenu(listView);
-
 	}
 
 	/**

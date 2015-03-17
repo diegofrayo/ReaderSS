@@ -42,7 +42,7 @@ public class API {
 	public API() {
 
 		this.dbConnection = new DatabaseConnection(
-				ApplicationContext.getContext(), "DatabaseApp.db", null, 1);
+				ApplicationContext.getContext(), "DatabaseApp.db", null, 2);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class API {
 					dbConnection.getWritableDatabase());
 
 			Category newCategory = new Category(name);
-			newCategory = categoryHelper.create(newCategory);
+			newCategory = categoryHelper.insert(newCategory);
 
 			boolean createDirectory = FilesManagement
 					.createDirectory(newCategory.getName());
@@ -79,7 +79,7 @@ public class API {
 				return newCategory;
 			} else {
 
-				categoryHelper.deleteCategory(newCategory.getId());
+				categoryHelper.delete(newCategory.getId());
 				throw new FileSystemException(R.string.error_create_folder);
 			}
 		}
@@ -95,12 +95,12 @@ public class API {
 
 			CategorySQLite categoryHelper = new CategorySQLite(
 					dbConnection.getReadableDatabase());
-			Category oldCategory = categoryHelper.getCategoryById(idCategory);
+			Category oldCategory = categoryHelper.getById(idCategory);
 
 			categoryHelper = new CategorySQLite(
 					dbConnection.getWritableDatabase());
 			Category categoryToEdit = new Category(newName);
-			categoryToEdit.setId(idCategory);
+            categoryToEdit.setId(idCategory);
 			categoryToEdit = categoryHelper.edit(categoryToEdit);
 
 			boolean response = FilesManagement.renameFolder(
@@ -125,10 +125,10 @@ public class API {
 
 		CategorySQLite categoryHelper = new CategorySQLite(
 				dbConnection.getReadableDatabase());
-		Category categoryDelete = categoryHelper.getCategoryById(idCategory);
+		Category categoryDelete = categoryHelper.getById(idCategory);
 
 		categoryHelper = new CategorySQLite(dbConnection.getWritableDatabase());
-		categoryHelper.deleteCategory(idCategory);
+		categoryHelper.delete(idCategory);
 
 		boolean response = FilesManagement.deleteFolder(categoryDelete
 				.getName());
@@ -138,7 +138,7 @@ public class API {
 			return categoryDelete;
 		} else {
 
-			categoryHelper.create(categoryDelete);
+			categoryHelper.insert(categoryDelete);
 			throw new FileSystemException(R.string.error_delete_folder);
 		}
 	}
@@ -148,7 +148,7 @@ public class API {
 		CategorySQLite categoryHelper = new CategorySQLite(
 				dbConnection.getReadableDatabase());
 
-		return categoryHelper.getCategoryById(idCategory);
+		return categoryHelper.getById(idCategory);
 	}
 
 	public List<Category> getListAllCategories() {
@@ -156,7 +156,7 @@ public class API {
 		CategorySQLite categoryHelper = new CategorySQLite(
 				dbConnection.getReadableDatabase());
 
-		return categoryHelper.getListAllCategories();
+		return categoryHelper.getAll();
 	}
 
 	/*--------------------------------------------*/
@@ -180,10 +180,9 @@ public class API {
 
 			RSSChannel newRSSChannel = new RSSChannel(url, name);
 			newRSSChannel.setCategory(categoryHelper
-					.getCategoryById(idCategory));
+					.getById(idCategory));
 			newRSSChannel.setLastUpdate(UtilAPI.getCurrentDateAndTime());
-
-			newRSSChannel = rssChannelHelper.create(newRSSChannel);
+			newRSSChannel = rssChannelHelper.insert(newRSSChannel);
 
 			try {
 
@@ -247,7 +246,7 @@ public class API {
 					dbConnection.getReadableDatabase());
 
 			RSSChannel oldRSSChannel = rssChannelHelper
-					.getRSSChannelById(idRSSChannel);
+					.getById(idRSSChannel);
 			rssChannelHelper = new RSSChannelSQLite(
 					dbConnection.getWritableDatabase());
 
@@ -255,7 +254,7 @@ public class API {
 			rssChannelToEdit.setId(idRSSChannel);
 			rssChannelToEdit.setName(newName);
 			rssChannelToEdit.setCategory(categoryHelper
-					.getCategoryById(newIdCategory));
+					.getById(newIdCategory));
 			rssChannelToEdit.setLastUpdate(oldRSSChannel.getLastUpdate());
 			rssChannelToEdit.setDateLastRSSLink(oldRSSChannel
 					.getDateLastRSSLink());
@@ -263,7 +262,7 @@ public class API {
 
 			rssChannelToEdit = rssChannelHelper.edit(rssChannelToEdit);
 
-			// Si el nombre cambió, se renombra el archivo
+			// Si el nombre cambiÃ³, se renombra el archivo
 			if (rssChannelToEdit.getName().equals(oldRSSChannel.getName()) == false) {
 
 				boolean response = FilesManagement.renameFile(oldRSSChannel
@@ -277,7 +276,7 @@ public class API {
 				}
 			}
 
-			// Si la categoria se editó, se cambia de carpeta
+			// Si la categoria se editÃ³, se cambia de carpeta
 			if (rssChannelToEdit.getCategory().getId() != oldRSSChannel
 					.getCategory().getId()) {
 
@@ -305,19 +304,13 @@ public class API {
 		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 				dbConnection.getReadableDatabase());
 		RSSChannel rssChannelToDelete = rssChannelHelper
-				.getRSSChannelById(idRSSChannel);
+				.getById(idRSSChannel);
 
 		rssChannelHelper = new RSSChannelSQLite(
 				dbConnection.getWritableDatabase());
 		rssChannelHelper.delete(idRSSChannel);
 
 		boolean response = FilesManagement.deleteFile(rssChannelToDelete);
-
-		// if (!response) {
-		//
-		// rssChannelHelper.create(rssChannelToDelete);
-		// throw new FileSystemException(R.string.error_delete_file);
-		// }
 
 		return response;
 	}
@@ -327,10 +320,10 @@ public class API {
 		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 				dbConnection.getReadableDatabase());
 
-		return rssChannelHelper.getRSSChannelById(idRSSChannel);
+		return rssChannelHelper.getById(idRSSChannel);
 	}
 
-	public RSSChannel editLastUpdateRSSChannel(RSSChannel rssChannel)
+	public RSSChannel editRSSChannelLastUpdate(RSSChannel rssChannel)
 			throws DataBaseTransactionException, NullEntityException {
 
 		if (rssChannel != null) {
@@ -338,26 +331,26 @@ public class API {
 			RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 					dbConnection.getWritableDatabase());
 
-			return rssChannelHelper.editLastUpdateRSSChannel(rssChannel);
+			return rssChannelHelper.editLastUpdate(rssChannel);
 		}
 
 		throw new NullEntityException(RSSChannel.class.getSimpleName());
 	}
 
-	public List<RSSChannel> getListRSSChannelsInACategory(int idCategory) {
+	public List<RSSChannel> getListRSSChannelsOfACategory(int idCategory) {
 
 		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 				dbConnection.getReadableDatabase());
 
-		return rssChannelHelper.getListRSSChannelsInACategory(idCategory);
+		return rssChannelHelper.getListRSSChannelsOfACategory(idCategory);
 	}
 
-	public int getNumberRSSChannelsInACategory(int idCategory) {
+	public int countRSSChannelsInCategory(int idCategory) {
 
 		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 				dbConnection.getReadableDatabase());
 
-		return rssChannelHelper.getNumberRSSChannelsInACategory(idCategory);
+		return rssChannelHelper.countRSSChannelsInCategory(idCategory);
 	}
 
 	public List<RSSChannel> getListAllRSSChannels() {
@@ -365,7 +358,7 @@ public class API {
 		RSSChannelSQLite rssChannelHelper = new RSSChannelSQLite(
 				dbConnection.getReadableDatabase());
 
-		return rssChannelHelper.getListAllRSSChannels();
+		return rssChannelHelper.getAll();
 	}
 
 	/*--------------------------------------------*/
@@ -380,11 +373,12 @@ public class API {
 
 		if (rssChannel != null) {
 
-			rssChannel.setListRSSLinks(FilesManagement.readFileXML(rssChannel));
-			List<RSSLink> list = rssChannel.getListRSSLinks();
+			rssChannel.setRSSLinksList(FilesManagement.readXMLFile(rssChannel));
+			List<RSSLink> list = rssChannel.getRSSLinksList();
 
-			// Caso de que todos sean nuevos. Esto pasa cuando se crea el
-			// RSSChannel, y no se ha leido por primera vez
+			/* Caso de que todos sean nuevos. Esto pasa cuando se crea el
+			* RSSChannel, y no se ha leido por primera vez
+			*/
 			if (rssChannel.getDateLastRSSLink() == null) {
 
 				if (list.get(0).getDate() != null) {
@@ -411,7 +405,7 @@ public class API {
 			}
 
 			rssChannel.setDateLastRSSLink(list.get(0).getDate());
-			rssChannel = editLastUpdateRSSChannel(rssChannel);
+			rssChannel = editRSSChannelLastUpdate(rssChannel);
 
 			return rssChannel;
 		}

@@ -1,7 +1,5 @@
 package com.diegorayo.readerss.adapters;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,12 +11,14 @@ import android.widget.TextView;
 import com.diegorayo.readerss.R;
 import com.diegorayo.readerss.entitys.RSSLink;
 
+import java.util.List;
+
 /**
  * @author Diego Rayo
- * @version 1 <br />
+ * @version 2 <br />
  *          Description
  */
-public class MyAdapterListRSSLinks extends ArrayAdapter<RSSLink> {
+public class MyAdapterRSSLinkList extends ArrayAdapter<RSSLink> {
 
 	/**
 	 * Se utiliza para generar una fila del list view con contenido
@@ -31,8 +31,8 @@ public class MyAdapterListRSSLinks extends ArrayAdapter<RSSLink> {
 	 */
 	private List<RSSLink> listRSSLinks;
 
-	public MyAdapterListRSSLinks(Context context, int resource,
-			int textViewResourceId, List<RSSLink> listRSSLinks) {
+	public MyAdapterRSSLinkList(Context context, int resource,
+                                int textViewResourceId, List<RSSLink> listRSSLinks) {
 
 		super(context, resource, textViewResourceId, listRSSLinks);
 		this.layoutInflater = LayoutInflater.from(context);
@@ -43,8 +43,7 @@ public class MyAdapterListRSSLinks extends ArrayAdapter<RSSLink> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		View row = convertView;
-
-		RSSLink rssLink = (RSSLink) listRSSLinks.get(position);
+		RSSLink rssLink = listRSSLinks.get(position);
 
 		if (row == null) {
 

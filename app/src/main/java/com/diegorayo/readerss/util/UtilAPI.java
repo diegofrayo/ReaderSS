@@ -1,10 +1,5 @@
 package com.diegorayo.readerss.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
@@ -12,11 +7,16 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author Diego Rayo
  * @version 2 <br />
  *          Clase que contiene metodos que van a ser utilizados en la clase
- *          RSSReaderAPI
+ *          API
  */
 public class UtilAPI {
 
@@ -31,6 +31,7 @@ public class UtilAPI {
 		ConnectivityManager cm = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
 		boolean isConnected = activeNetwork != null
 				&& activeNetwork.isConnectedOrConnecting();
 
@@ -82,4 +83,5 @@ public class UtilAPI {
 
 		return "";
 	}
+
 }

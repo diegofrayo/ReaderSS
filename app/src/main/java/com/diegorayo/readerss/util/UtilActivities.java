@@ -1,7 +1,5 @@
 package com.diegorayo.readerss.util;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,6 +14,8 @@ import android.widget.Toast;
 import com.diegorayo.readerss.R;
 import com.diegorayo.readerss.context.ApplicationContext;
 import com.diegorayo.readerss.entitys.Category;
+
+import java.util.List;
 
 /**
  * @author Diego Rayo
@@ -44,10 +44,10 @@ public class UtilActivities {
 				.setNegativeButton(R.string.word_cancel,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-
 								dialog.dismiss();
 							}
 						});
+
 		builder.create();
 		builder.show();
 	}
