@@ -368,7 +368,7 @@ public class MainActivity extends Activity implements OnClickListener,
         api = null;
 
         Intent intent = new Intent(this, CategoryActivity.class);
-        intent.putExtra("category", categoryList.get(v.getId() - 1));
+        intent.putExtra("category", categoryList.get(arg2));
 
         // Significa que inicia una nueva actividad, y cuando esta se acaba,
         // vuelve a la actual

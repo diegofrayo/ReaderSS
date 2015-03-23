@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/icon_rss_channel"
-        android:textColor="@color/color_text"
+        android:textColor="@color/color_black"
         android:textSize="@dimen/size_font_medium"
         android:textStyle="bold" >
     </TextView>

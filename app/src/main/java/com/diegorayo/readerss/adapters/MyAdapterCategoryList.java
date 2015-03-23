@@ -65,7 +65,7 @@ public class MyAdapterCategoryList extends ArrayAdapter<Category> {
 		txt.setText("(" + api.countRSSChannelsInCategory(category.getId())
 				+ ")");
 
-		row.setId(category.getId());
+		row.setId(position);
 
 		return row;
 	}

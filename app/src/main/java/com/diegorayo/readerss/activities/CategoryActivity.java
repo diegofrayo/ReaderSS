@@ -300,7 +300,7 @@ public class CategoryActivity extends Activity implements OnClickListener,
 
         Intent intentRSSChannelActivity = new Intent(this,
                 RSSChannelActivity.class);
-        intentRSSChannelActivity.putExtra("rss_channel", rssChannelList.get(v.getId()-1));
+        intentRSSChannelActivity.putExtra("rss_channel", rssChannelList.get(arg2));
 
         // Significa que inicia una nueva actividad, y cuando esta se acaba,
         // vuelve a la actual

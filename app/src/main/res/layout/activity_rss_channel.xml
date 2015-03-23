@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/color_white"
+    android:background="@color/color_bg_main"
     android:orientation="vertical" >
 
     <!-- Header APP -->
@@ -33,7 +33,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginBottom="2dp"
-                android:textColor="@color/color_text"
+                android:textColor="@color/color_light_green"
                 android:textSize="@dimen/size_font_large"
                 android:textStyle="bold" />
 
@@ -41,21 +41,21 @@
                 android:id="@+id/txt_url_rss_channel"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:textColor="@color/color_text"
+                android:textColor="@color/color_light_blue"
                 android:textSize="@dimen/size_font_extra_small" />
 
             <TextView
                 android:id="@+id/txt_category_rss_channel"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:textColor="@color/color_text"
+                android:textColor="@color/color_light_blue"
                 android:textSize="@dimen/size_font_extra_small" />
 
             <TextView
                 android:id="@+id/txt_last_update"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:textColor="@color/color_text"
+                android:textColor="@color/color_light_blue"
                 android:textSize="@dimen/size_font_extra_small" />
         </LinearLayout>
 
@@ -76,7 +76,7 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:padding="5dp"
                 android:text="@string/word_posts"
-                android:textColor="@color/color_white"
+                android:textColor="@color/color_orange"
                 android:textSize="@dimen/size_font_extra_large"
                 android:id="@+id/txt_posts_rss_channel" />
 

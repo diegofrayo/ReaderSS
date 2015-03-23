@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_marginBottom="1dp"
-    android:background="@color/color_white"
+    android:background="@color/color_row_item_bg"
     android:padding="5dp" >
 
     <ImageView
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/icon_rss_channel"
-        android:textColor="@color/color_text"
+        android:textColor="@color/color_light_green"
         android:textSize="@dimen/size_font_large"
         android:textStyle="bold" >
     </TextView>
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txt_list_rss_channel_name"
         android:layout_toRightOf="@+id/icon_rss_channel"
-        android:textColor="@color/color_text"
+        android:textColor="@color/color_light_blue"
         android:textSize="@dimen/size_font_extra_small"
         android:textStyle="bold" >
     </TextView>

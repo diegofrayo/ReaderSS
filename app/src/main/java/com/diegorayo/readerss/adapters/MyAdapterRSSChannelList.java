@@ -67,7 +67,7 @@ public class MyAdapterRSSChannelList extends ArrayAdapter<RSSChannel> {
 				+ ": "
 				+ rssChannel.getLastUpdate() + " ");
 
-		row.setId(rssChannel.getId());
+		row.setId(position);
 
 		return row;
 	}
