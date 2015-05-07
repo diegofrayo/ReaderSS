@@ -1,7 +1,6 @@
 package com.diegorayo.readerss.activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -10,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -17,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -56,7 +55,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * @version 2 <br />
  *          Actividad para mostrar un rsschannel con sus links y su informacion
  */
-public class RSSChannelActivity extends Activity implements OnClickListener,
+public class RSSChannelActivity extends ActionBarActivity implements OnClickListener,
 		OnItemClickListener {
 
 	/**
@@ -154,12 +153,12 @@ public class RSSChannelActivity extends Activity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//		requestWindowFeature(Window.FEATURE_NO_TITLE);
+//		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_rss_channel);
 
-		UtilActivities.inflateHeaderApp(this);
+		UtilActivities.configureActionBar(this);
 
 		Intent it = getIntent();
         currentRSSChannel = it.getParcelableExtra("rss_channel");

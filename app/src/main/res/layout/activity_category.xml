@@ -4,14 +4,6 @@
     android:background="@color/color_bg_main"
     android:orientation="vertical" >
 
-    <!-- Header APP -->
-
-    <RelativeLayout
-        android:id="@+id/container_header_app"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-    </RelativeLayout>
-
     <!-- Body -->
 
     <LinearLayout

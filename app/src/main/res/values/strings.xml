@@ -79,7 +79,8 @@
 	<string name="error_download_file">The file cannot be downloaded</string>
 	<string name="error_edit_file">System Error. Cannot modify a file</string>
 	<string name="error_delete_file">System Error. Cannot remove a file</string>
-	<string name="error_no_internet_connection">There is not connection to internet</string>
+    <string name="error_no_internet_connection">There is not connection to internet</string>
+    <string name="error_categories_not_found">First create a category</string>
 	<!-- Error messages -->
 
 </resources>

@@ -1,17 +1,30 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/btn_menu_edit_rss_channel"
-        android:icon="@drawable/ic_edit"
-        android:title="@string/word_edit"/>
-    <item
-        android:id="@+id/btn_menu_delete_rss_channel"
-        android:icon="@drawable/ic_delete"
-        android:title="@string/word_delete"/>
-    <item
-        android:id="@+id/btn_menu_update_rss_channel"
-        android:icon="@drawable/ic_update"
-        android:title="@string/word_update"/>
-  
-
+        android:id="@+id/btn_more"
+        android:icon="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+        app:showAsAction="always"
+        android:title="More">
+        <menu>
+            <item
+                android:id="@+id/btn_menu_edit_rss_channel"
+                android:icon="@drawable/ic_edit"
+                android:orderInCategory="1"
+                app:showAsAction="ifRoom"
+                android:title="@string/word_edit" />
+            <item
+                android:id="@+id/btn_menu_delete_rss_channel"
+                android:orderInCategory="2"
+                android:icon="@drawable/ic_delete"
+                app:showAsAction="ifRoom"
+                android:title="@string/word_delete" />
+            <item
+                android:id="@+id/btn_menu_update_rss_channel"
+                android:orderInCategory="3"
+                android:icon="@drawable/ic_update"
+                app:showAsAction="ifRoom"
+                android:title="@string/word_update" />
+        </menu>
+    </item>
 </menu>
