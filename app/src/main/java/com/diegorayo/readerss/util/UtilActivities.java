@@ -115,8 +115,8 @@ public class UtilActivities {
                                                  List<Category> categoryList, Spinner spinner) {
 
         ArrayAdapter<Category> dataAdapter = new ArrayAdapter<Category>(
-                context, android.R.layout.simple_spinner_dropdown_item,
-                categoryList);
+                context, R.layout.spinner_item, categoryList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
     }
 

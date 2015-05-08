@@ -357,7 +357,7 @@ public class CategoryActivity extends ActionBarActivity implements OnClickListen
 
                 // Creo el dialogo de confirmacion
                 UtilActivities.createConfirmDialog(this,
-                        R.string.txt_qst_delete_rss_channel, onClickListener);
+                        R.string.txt_qst_delete_category, onClickListener);
 
                 break;
 

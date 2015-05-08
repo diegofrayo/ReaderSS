@@ -33,7 +33,7 @@ public class UtilAPI {
 		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
 
 		boolean isConnected = activeNetwork != null
-				&& activeNetwork.isConnectedOrConnecting();
+				&& activeNetwork.isConnected();
 
 		return isConnected;
 	}
