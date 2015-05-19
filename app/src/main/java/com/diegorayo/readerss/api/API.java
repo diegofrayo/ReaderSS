@@ -437,17 +437,17 @@ public class API {
 
 	public boolean getConfigurationToViewRSSLinks() {
 
-		SharedPreferences sharedPreferences = ApplicationContext.getContext()
+		SharedPreferences SharedPreferences = ApplicationContext.getContext()
 				.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
-		return sharedPreferences.getBoolean("open_links_in_browser", true);
+		return SharedPreferences.getBoolean("open_links_in_browser", true);
 	}
 
 	public void editConfigurationToViewRSSLinks(boolean option) {
 
-		SharedPreferences sharedPreferences = ApplicationContext.getContext()
+		SharedPreferences SharedPreferences = ApplicationContext.getContext()
 				.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
+		SharedPreferences.Editor editor = SharedPreferences.edit();
 
 		editor.putBoolean("open_links_in_browser", option);
 		editor.commit();
@@ -461,10 +461,10 @@ public class API {
 
 		if (numberCategories == 0) {
 
-			SharedPreferences sharedPreferences = ApplicationContext
+			SharedPreferences SharedPreferences = ApplicationContext
 					.getContext().getSharedPreferences("Preferences",
 							Context.MODE_PRIVATE);
-			SharedPreferences.Editor editor = sharedPreferences.edit();
+			SharedPreferences.Editor editor = SharedPreferences.edit();
 
 			editor.putBoolean("open_links_in_browser", true);
 			editor.commit();
