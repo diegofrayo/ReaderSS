@@ -1,4 +1,4 @@
-ReaderSS
+ReaderSS-Android
 ========
 
-Reader of web sources in RSS format developed in Android
+Reader of web resources in RSS format developed in Android
