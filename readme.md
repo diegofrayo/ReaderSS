@@ -1,4 +1,4 @@
-ReaderSS-Android
+readerss
 =======================
 
 RSS Feed Reader
