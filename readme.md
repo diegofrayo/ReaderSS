@@ -1,6 +1,5 @@
-readerss
-=======================
+# readerss
 
 RSS Feed Reader for Android
 
-![preview](https://www.dropbox.com/s/knyubd8y2gcxevi/ReaderSS.PNG?raw=1)
+![preview](https://raw.githubusercontent.com/diegofrayo/readerss/master/screenshot.png)
